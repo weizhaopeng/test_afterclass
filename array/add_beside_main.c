@@ -10,7 +10,7 @@ scanf("%ld",&a[i]);
 add_beside_faction(a,b);
 for(i=0;i<4;i++)
 {
-printf("%-5ldnihao\t",b[i]);
+printf("%-5ld\t",b[i]);
 j=i+1;
 if(j%3==0)
 printf("\n");
