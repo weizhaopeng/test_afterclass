@@ -11,7 +11,7 @@ int main (void)
 	
 	bubble_sort(arr,10);
 	
-	puts("请输入要插入的数值：\n");
+	puts("请输入要插入的数值：");
 	scanf("%d",&ins);
 	
 	insert_element(arr,10,ins);
