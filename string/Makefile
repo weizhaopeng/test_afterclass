@@ -1,5 +1,4 @@
 obj=insert_main.o insert_element.o bubble_sort.o 
-include <makefile>
 insert:insert_element.o insert_main.o bubble_sort.o
 	gcc -o insert $(obj)
 
