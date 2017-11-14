@@ -1,4 +1,3 @@
-#include"stdio.h"
 #include"insert_element.h"
 void insert_element(int arr[20],int n,int ins)
 {
