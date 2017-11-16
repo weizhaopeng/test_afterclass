@@ -4,5 +4,5 @@
 #include"stdio.h"
 #include"string.h"
 char *strings[5];
-void sort_string(char *strings[],int n);
+void sort_string(char *string[],int n);
 #endif
