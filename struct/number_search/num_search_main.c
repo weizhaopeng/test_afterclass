@@ -5,7 +5,7 @@ void main (void)
 	CUSTOMER *cus[10];
 	int judge=1,check1,i=0;
 
-	printf("请输入用户名和电话号码，按#结束\n****例如：魏朝鹏# 13151589195\n");
+	printf("请输入用户名和电话号码\n****例如：魏朝鹏# 13151589195\n");
 	cus[0]=(CUSTOMER *)malloc(sizeof(CUSTOMER));
 	scanf("%s%s",cus[0]->name,cus[0]->num);	
 	i++;
@@ -16,7 +16,7 @@ void main (void)
 		scanf("%d",&judge);
 		if(judge!=0)
 		{
-			puts("请继续输入\n用户名和电话号码，按#结束\n****例如：魏朝鹏# 13151589195\n");
+			puts("请继续输入\n用户名和电话号码\n****例如：魏朝鹏# 13151589195\n");
 			cus[i]=(CUSTOMER *)malloc(sizeof(CUSTOMER));
 			scanf("%s%s",cus[i]->name,cus[i]->num);
 			i++;
@@ -24,10 +24,12 @@ void main (void)
 		else
 		judge=0;
 	}while(judge!=0);
-	
-	puts("是否查询用户号码：是——1，否——0");
-	scanf("%d",&check1);
-	if(check1!=0)
-	num_check(cus,i-1);
+	do
+	{
+		puts("是否查询用户号码：是——1，否——0");
+		scanf("%d",&check1);
+		if(check1!=0)
+		num_check(cus,i-1);
+	}while(check1!=0);
 }
 	
