@@ -1,6 +1,14 @@
 #include"guess_number.h"
+static TRY *ans;
+ans=(TRY *)calloc(sizeof(TRY));
+ans->name="auto";
+for(int i=0;i<4;i++)
+{
+	ans->number[i]=rand()&9;
+}
 void guess_num_menu()
 {
+	int choice_ruletype;
 	unsigned int choice_menu;
 	for(int row=0;row<3;row++)
 	{

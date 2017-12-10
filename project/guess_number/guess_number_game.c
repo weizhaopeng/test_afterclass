@@ -1,4 +1,4 @@
-#include"guess_num.h"
+#include"guess_number.h"
 void guess_num_mode()
 {
 	int choice_gamemode;
