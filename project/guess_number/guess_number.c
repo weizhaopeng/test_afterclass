@@ -1,12 +1,6 @@
 #include"guess_number.h"
-static TRY *ans;
-ans=(TRY *)calloc(sizeof(TRY));
-ans->name="auto";
-for(int i=0;i<4;i++)
-{
-	ans->number[i]=rand()&9;
-}
-void guess_num_menu()
+
+void guess_num_menu(void)
 {
 	int choice_ruletype;
 	unsigned int choice_menu;
@@ -24,19 +18,19 @@ void guess_num_menu()
 	scanf("%d",&choice_menu);
 	switch(choice_menu)
 	{
-		case 0:void guess_num_game();
+		case 1:guess_num_mode();
 			break;
-		case 1:void guess_num_rule();
+		case 2:guess_num_rule();
 			break;
-		case 2:exit(-1);
+		case 3:return;
 			break;
 		default:puts("选择错误");
-			void guess_num_menu();
+			guess_num_menu();
 			break;
 	}
 }
 		
 void main (void)
 {	
-	
+	guess_num_menu();
 }
