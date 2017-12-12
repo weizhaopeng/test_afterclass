@@ -5,12 +5,13 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
+#include<time.h>
 /*每次尝试也就是进行一次游戏
 *游戏者的名字和循环输入的数字数据*/
 typedef struct 
 {
 	char name[15];
-	char number[4];
+	int  number[4];
 	int  try_number; 
 }TRY;
 /*用于显示-A-B的结果*/

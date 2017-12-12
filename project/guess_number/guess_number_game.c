@@ -15,11 +15,13 @@ void guess_num_mode()
 
 	switch(choice_gamemode)
 	{
-		case 1:for(int i=0;i<4;i++)
+		case 1:srand((unsigned)time(NULL));
+				for(int i=0;i<4;i++)
 					ans->number[i]=rand()%9;
 			game_1p(ans);
 			break;
-		case 2:for(int i=0;i<4;i++)
+		case 2:srand((unsigned)time(NULL));
+				for(int i=0;i<4;i++)
 					ans->number[i]=rand()%9;
 			game_2p(ans);
 			break;
@@ -35,8 +37,9 @@ void guess_num_mode()
 void game_1p(const TRY *ans)
 {
 	TRY *try0;
-	RESULT *result;
 	try0=(TRY *)malloc(sizeof(TRY));
+	RESULT *result;
+	result=(RESULT *)malloc(sizeof(RESULT));
 
 	puts("请输入您的姓名：");
 	scanf("%s",try0->name);
@@ -45,23 +48,23 @@ void game_1p(const TRY *ans)
 	do
 	{
 		printf("*****请输入您的猜想*****\n\n\n");
-		for(int i=0;i<4;i++)
-			scanf("%c",&try0->number[i]);
-		result->A=result->B=0;
+
+		scanf("%d%d%d%d",try0->number,try0->number+1,try0->number+2,try0->number+3);
+		result->A=0;
+		result->B=0;
 		
 		for(int ans_i=0;ans_i<4;ans_i++)
 		{
+			if(try0->number[ans_i]==ans->number[ans_i])
+				result->A++;
 			for(int try0_j=0;try0_j<4;try0_j++)
 			{
-				if(try0->number[ans_i]==ans->number[ans_i])
-					result->A++;
-				if(try0->number[try0_j]==ans->number[ans_i]&&\
-					ans_i!=try0_j)
+				if(try0->number[try0_j]==ans->number[ans_i]&&ans_i!=try0_j)
 					result->B++;
 			}
 		}
 		
-		if(result->A==4&&result->B==0)
+		if(result->A==4)
 		{
 			printf("*****输入正确******\n正确结果是：%d %d %d %d\n", \
 			ans->number[0],ans->number[1],ans->number[2],ans->number[3]);
@@ -78,8 +81,9 @@ void game_1p(const TRY *ans)
 void game_2p(const TRY *ans)
 {
 	RESULT *result;
+	result=(RESULT *)malloc(sizeof(RESULT));
+
 	TRY *try1,*try2;
-	
 	try1=(TRY *)malloc(sizeof(TRY));
 	try2=(TRY *)malloc(sizeof(TRY));
 	
@@ -89,10 +93,12 @@ void game_2p(const TRY *ans)
 	scanf("%s",try2->name);
 	
 	int num_try=0;
-	try1->try_number=try1->try_number=0;
+	try1->try_number=0;
+	try2->try_number=0;
 	do 
 	{
-		result->A=result->B=0;
+		result->A=0;
+		result->B=0;
 		
 		if(num_try%2==0)
 			printf("*****%s*****\n",try1->name);
@@ -100,22 +106,21 @@ void game_2p(const TRY *ans)
 			printf("*****%s*****\n",try2->name);
 
 		printf("*****请输入您的猜想*****\n\n\n");
-		for(int i=0;i<4;i++)
-			try1->number[i]=getchar();
-	
+		scanf("%d%d%d%d",try1->number,try1->number+1,try1->number+2,try1->number+3);
+
 		for(int ans_i=0;ans_i<4;ans_i++)
 		{
+			if(try1->number[ans_i]==ans->number[ans_i])
+				result->A++;
 			for(int try1_j=0;try1_j<4;try1_j++)
 			{
-				if(try1->number[ans_i]==ans->number[ans_i])
-					result->A++;
 				if(try1->number[try1_j]==ans->number[ans_i]&&\
 					ans_i!=try1_j)
 					result->B++;
 			}
 		}
 			
-		if(result->A==4&&result->B==0)
+		if(result->A==4)
 		{
 			printf("*****输入正确******\n正确结果是：%d %d %d %d\n", \
 			ans->number[0],ans->number[1],ans->number[2],ans->number[3]);
