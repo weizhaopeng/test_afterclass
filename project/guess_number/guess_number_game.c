@@ -5,6 +5,7 @@ void guess_num_mode()
 	TRY *ans;
 	ans=(TRY *)malloc(sizeof(TRY));
 
+	system("clear");
 	puts("\
 	*****请选择游戏模式*****\n\
 	*****1:单人模式    *****\n\
@@ -45,6 +46,11 @@ void game_1p(const TRY *ans)
 	scanf("%s",try0->name);
 	try0->try_number=0;
 
+	FILE *fp;
+	fp=fopen("guess_number_record.doc","a+");
+	char *title="猜数字游戏记录\n";
+	fputs(title,fp):
+	
 	do
 	{
 		printf("*****请输入您的猜想*****\n\n\n");
@@ -68,6 +74,7 @@ void game_1p(const TRY *ans)
 		{
 			printf("*****输入正确******\n正确结果是：%d %d %d %d\n", \
 			ans->number[0],ans->number[1],ans->number[2],ans->number[3]);
+			
 			break;
 		}
 		else
@@ -105,6 +112,7 @@ void game_2p(const TRY *ans)
 		else
 			printf("*****%s*****\n",try2->name);
 
+		system("clear");
 		printf("*****请输入您的猜想*****\n\n\n");
 		scanf("%d%d%d%d",try1->number,try1->number+1,try1->number+2,try1->number+3);
 

@@ -4,6 +4,7 @@ void guess_num_menu(void)
 {
 	int choice_ruletype;
 	unsigned int choice_menu;
+	
 	for(int row=0;row<3;row++)
 	{
 		if(row==0)
@@ -32,5 +33,6 @@ void guess_num_menu(void)
 		
 void main (void)
 {	
+	system("clear");
 	guess_num_menu();
 }
