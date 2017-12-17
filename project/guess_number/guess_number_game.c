@@ -47,9 +47,6 @@ void game_1p(const TRY *ans)
 	try0->try_number=0;
 
 	FILE *fp;
-	fp=fopen("guess_number_record.doc","a+");
-	char *title="猜数字游戏记录\n";
-	fputs(title,fp):
 	
 	do
 	{
@@ -74,7 +71,7 @@ void game_1p(const TRY *ans)
 		{
 			printf("*****输入正确******\n正确结果是：%d %d %d %d\n", \
 			ans->number[0],ans->number[1],ans->number[2],ans->number[3]);
-			
+			guess_num_record_1p(try0);
 			break;
 		}
 		else
@@ -102,6 +99,7 @@ void game_2p(const TRY *ans)
 	int num_try=0;
 	try1->try_number=0;
 	try2->try_number=0;
+
 	do 
 	{
 		result->A=0;
@@ -112,7 +110,6 @@ void game_2p(const TRY *ans)
 		else
 			printf("*****%s*****\n",try2->name);
 
-		system("clear");
 		printf("*****请输入您的猜想*****\n\n\n");
 		scanf("%d%d%d%d",try1->number,try1->number+1,try1->number+2,try1->number+3);
 
@@ -136,6 +133,8 @@ void game_2p(const TRY *ans)
 				printf("玩家%s胜出\n",try1->name);
 			else
 				printf("玩家%s胜出\n",try2->name);
+			
+			guess_num_record_2p(try1,try2);
 			break;
 		}
 		else

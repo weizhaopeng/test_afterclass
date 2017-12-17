@@ -1,5 +1,4 @@
 #include"guess_number.h"
-
 void guess_num_menu(void)
 {
 	int choice_ruletype;

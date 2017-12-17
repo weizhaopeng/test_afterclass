@@ -32,5 +32,8 @@ void game_1p(const TRY *ans);
 void game_2p(const TRY *ans);
 /*选择游戏模式*/
 void guess_num_ganmemode(void);
+/*游戏记录函数*/
+void guess_num_record_1p(const TRY *try);
+void guess_num_record_2p(const TRY *try1,const TRY *try2);
 
 #endif
