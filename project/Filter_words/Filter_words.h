@@ -10,14 +10,14 @@ typedef struct
 	char word[MAX];
 	long wd_num;
 	int comp_value;
-}NODE_INFO;
-
+}PARAM_WORDS; 
 typedef struct
 {
-	NODE_INFO *word；
+	PARAM_WORDS *param_words；
 	NODE *next_node;
 }NODE;
 
-typedef NODE* LIST;
+typedef NODE* LIST_WORDS; 
 
 
+#endif
