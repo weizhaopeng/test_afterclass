@@ -7,14 +7,15 @@
 /*程序数据结构*/
 typedef struct
 {
-	char word[MAX];
-	long wd_num;
-	int comp_value;
-}PARAM_WORDS; 
+	char word_spell[MAX];
+	long word_number;
+	int  word_value;
+}WORD; 
+
 typedef struct
 {
-	PARAM_WORDS *param_words；
-	NODE *next_node;
+	WORD *word;
+	NODE *node_next;
 }NODE;
 
 typedef NODE* LIST_WORDS; 
