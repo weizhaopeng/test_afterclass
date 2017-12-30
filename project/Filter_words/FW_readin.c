@@ -13,7 +13,6 @@ LIST_WORDS FW_readin(void)
 	fp=acknowledge_fp();
 	/*creat the linked list and the first node to stoage the words*/
 	list_words=node_last=creat_node(fp);
-
 	/*add the new word into the linked list*/
 	for(int i=0;feof(fp)!=0;i++)
 	{
