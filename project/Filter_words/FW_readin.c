@@ -2,41 +2,34 @@
 
 LIST_WORDS FW_readin(void)
 {
-	char filename_read[MAX];
-	char char_temp;
-	char array_temp[MAX];
-	int  comp_value_newword;
 	FILE *fp;
-	LIST_WORDS *list_words,*node_last,*node_temp,*node_new;
+	static LIST_WORDS *list_words;
+	LIST_WORDS *node_return_judge;
 	
-	/*open the file*/
 	fp=acknowledge_fp();
-	/*creat the linked list and the first node to stoage the words*/
-	list_words=node_last=creat_node(fp);
+
+	list_words=creat_node(fp);
 	/*add the new word into the linked list*/
 	for(int i=0;feof(fp)!=0;i++)
 	{
-		fscanf(fp,"%s",array_temp);
-		file_error(fp);
-		comp_value_newword=value_word(array_temp);
-		fp_skip_space(fp);
-		
-		if(classify_word(list_words,comp_temp)==true)
+		node_return_judge=classify_word(fp);
+		if(node_return_judge==NULL)
 			continue;
 		else
-		{
-			/*creat a new node*/
-			newnode=generate_node(array_temp);
 			sort_list(list_words,newnode);
-		}
+
+		fp_skip_space(fp);
 	}
 	fclose(fp);
 	return list_words;
 }
+
+
+
 /*acknowledge the filename need read*/
 FILE *acknowledge_fp()
 {
-	char filename_read[MAX];
+	static char filename_read[MAX];
 
 	printf("\033[40;41mplease input the name of file\n\033[0m");
 	scanf("%s",filename_read);
@@ -45,28 +38,43 @@ FILE *acknowledge_fp()
 	return fp;
 }
 /*creat a node from the file to save the word and return the point of the node*/
-NODE *creat_node(const FILE *fp)
+NODE *creat_node(FILE *fp)
 {
 	NODE *node_new;
 	node_new=(NODE *)malloc(sizeof(NODE));
-	fscanf(fp,"%s",node_new->word->word_spell);
+	fscanf(fp,"%s",node_new->word_content->word);
 	file_error(fp);
-	node_new->word->word_number++;
-	node_new->word->word_value=comp_value(node_new->word->word_spell);
+	node_new->word_content->word_number++;
+	node_new->word_content->word_value=comp_value(node_new->\
+	word_content->word);
 	node_new->node_next=NULL;
-	
+
+	fp_skip_space(fp);
 	return node_new; }
 /*creat a node according to the internal information the node*/
-NODE *generate_node(const char arr[])
+NODE *classify_word(FILE *fp)
 {
+	int comp_value_newnode;
+	char array_temp[MAX];
 	NODE *newnode;
-	newnode=(NODE *)malloc(sizeof(NODE));
-	newnode->word->word_number++;
-	newnode->word->word_value=comp_value(arr);;
-	newnode->node_next==NULL;
-	for(int i=0;i<MAX;i++)
-		newnode->word->word_spell[i]=arr[i];
 
+	fscanf(fp,"%s",array_temp);
+	file_error(fp);
+	comp_value_newword=value_word(array_temp);
+	fp_skip_space(fp);
+	
+	if(match_node(list_words,comp_temp)==TRUE)
+		return NULL;
+	else
+	{
+		newnode=(NODE *)malloc(sizeof(NODE));
+		newnode->word_content->word_number++;
+		newnode->word_content->word_value=comp_value_newnode;
+		newnode->node_next==NULL;
+		for(int i=0;i<MAX;i++)
+			newnode->word_content->word[i]=arr[i];
+
+	}
 	return newnode;
 }
 /*input a word as a array and return the value computed*/
@@ -84,7 +92,7 @@ int comp_value(const char arr[])
 	return comp_value;
 }
 /*input the point of file and skip the spaces to read the next word*/
-void fp_skip_space(const FILE *fp)
+void fp_skip_space(FILE *fp)
 {
 	char char_temp;
 	for(int i=0;char_temp==' ';i++)
@@ -94,31 +102,32 @@ void fp_skip_space(const FILE *fp)
 /*if cthe value computed of a word equel to one node of the list, \
  *lassify and add it into the linked list
  */
-bool classify_word(const LIST_WORDS list_words,const int comp_value)
+BOOL match_node(const LIST_WORDS *list_words,const int comp_value)
 {
 	NODE *node_temp=list_words;
 
 	for(int i=0;;i++)
 	{
-		if(comp_value==node_temp->word->word_value)
+		if(comp_value==node_temp->word_content->word_value)
 		{
-			node_temp->word->word_number++;
-			return true;
+			node_temp->word_content->word_number++;
+			return TRUE;
 		}
 		if(node_temp->node_next==NULL)
-			return false;
+			return FALSE;
 		node_temp=node_temp->node_next;
 	}
 }
 /*sort the nodes of linked list as the value computed in the process\
  *of creating the linked list
  */
-void sort_list(LIST_WORDS *list_words,NODE *newnode)
+void sort_list(const LIST_WORDS *list_words,const NODE *newnode)
 {
 	NODE *node_temp=list_words;
 	for(int i=0;;i++)
 	{
-		if(newnode->word->word_value<=node_temp->word->word_value)
+		if(newnode->word_content->word_value<=node_temp->\
+		word_content->word_value)
 		{
 			newnode->node_next=node_temp->node_next;
 			node_temp->node_next=newnode;
@@ -126,19 +135,6 @@ void sort_list(LIST_WORDS *list_words,NODE *newnode)
 		node_temp=node_temp->node_next;
 	}
 }
-			
-
-
-
-
-
-
-
-
-
-
-
-
 
 		
 
