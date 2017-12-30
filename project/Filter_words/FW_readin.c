@@ -10,10 +10,7 @@ LIST_WORDS FW_readin(void)
 	LIST_WORDS *list_words,*node_last,*node_temp,*node_new;
 	
 	/*open the file*/
-	filename_read=acknowledge_filename();
-	fp=fopen(filename_read,"r+");
-	file_error(fp);
-
+	fp=acknowledge_fp();
 	/*creat the linked list and the first node to stoage the words*/
 	list_words=node_last=creat_node(fp);
 
@@ -38,13 +35,15 @@ LIST_WORDS FW_readin(void)
 	return list_words;
 }
 /*acknowledge the filename need read*/
-char *acknowledge_filename()
+FILE *acknowledge_fp()
 {
-	static char filename_read[MAX];
+	char filename_read[MAX];
 
 	printf("\033[40;41mplease input the name of file\n\033[0m");
 	scanf("%s",filename_read);
-	return filename;
+	fp=fopen(filename_read,"r+");
+	file_error(fp);
+	return fp;
 }
 /*creat a node from the file to save the word and return the point of the node*/
 NODE *creat_node(const FILE *fp)
@@ -57,8 +56,7 @@ NODE *creat_node(const FILE *fp)
 	node_new->word->word_value=comp_value(node_new->word->word_spell);
 	node_new->node_next=NULL;
 	
-	return node_new;
-}
+	return node_new; }
 /*creat a node according to the internal information the node*/
 NODE *generate_node(const char arr[])
 {
