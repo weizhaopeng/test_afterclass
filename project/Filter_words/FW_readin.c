@@ -3,8 +3,8 @@
 LIST_WORDS FW_readin(void)
 {
 	FILE *fp;
-	static LIST_WORDS *list_words;
-	LIST_WORDS *node_return_judge;
+	static LIST_WORDS list_words;
+	NODE *node_judge;
 	
 	fp=acknowledge_fp();
 
@@ -12,11 +12,11 @@ LIST_WORDS FW_readin(void)
 	/*add the new word into the linked list*/
 	for(int i=0;feof(fp)!=0;i++)
 	{
-		node_return_judge=classify_word(fp);
-		if(node_return_judge==NULL)
+		node_judge=classify_word(list_words,fp);
+		if(node_judge==NULL)
 			continue;
 		else
-			sort_list(list_words,newnode);
+			sort_list(list_words,node_judge);
 
 		fp_skip_space(fp);
 	}
@@ -30,12 +30,25 @@ LIST_WORDS FW_readin(void)
 FILE *acknowledge_fp()
 {
 	static char filename_read[MAX];
+    FILE *fp;
 
-	printf("\033[40;41mplease input the name of file\n\033[0m");
+	printf("\033[40;41mplease input the name of file\033[0m\n");
 	scanf("%s",filename_read);
 	fp=fopen(filename_read,"r+");
 	file_error(fp);
 	return fp;
+}
+/*check the error when open the file and read or write the file*/
+void file_error(FILE *fp)
+{
+    if(fp==NULL){
+        puts("open file error");
+        exit(-1);
+    }
+    if(ferror(fp)==1){
+        puts("file read or write error");
+        exit(-1);
+    }
 }
 /*creat a node from the file to save the word and return the point of the node*/
 NODE *creat_node(FILE *fp)
@@ -50,35 +63,35 @@ NODE *creat_node(FILE *fp)
 	node_new->node_next=NULL;
 
 	fp_skip_space(fp);
-	return node_new; }
+	return node_new; 
+}
 /*creat a node according to the internal information the node*/
-NODE *classify_word(FILE *fp)
+NODE *classify_word(LIST_WORDS list_words,FILE *fp)
 {
-	int comp_value_newnode;
+	int comp_value_newword;
 	char array_temp[MAX];
 	NODE *newnode;
 
 	fscanf(fp,"%s",array_temp);
 	file_error(fp);
-	comp_value_newword=value_word(array_temp);
+	comp_value_newword=comp_value(array_temp);
 	fp_skip_space(fp);
 	
-	if(match_node(list_words,comp_temp)==TRUE)
+	if(match_node(list_words,comp_value_newword)==TRUE)
 		return NULL;
 	else
 	{
 		newnode=(NODE *)malloc(sizeof(NODE));
 		newnode->word_content->word_number++;
-		newnode->word_content->word_value=comp_value_newnode;
+		newnode->word_content->word_value=comp_value_newword;
 		newnode->node_next==NULL;
 		for(int i=0;i<MAX;i++)
-			newnode->word_content->word[i]=arr[i];
-
+			newnode->word_content->word[i]=array_temp[i];
 	}
 	return newnode;
 }
 /*input a word as a array and return the value computed*/
-int comp_value(const char arr[])
+int comp_value(char arr[])
 {
 	int comp_value=0;
 	
@@ -102,7 +115,7 @@ void fp_skip_space(FILE *fp)
 /*if cthe value computed of a word equel to one node of the list, \
  *lassify and add it into the linked list
  */
-BOOL match_node(const LIST_WORDS *list_words,const int comp_value)
+BOOL match_node(const LIST_WORDS list_words,const int comp_value)
 {
 	NODE *node_temp=list_words;
 
@@ -121,7 +134,7 @@ BOOL match_node(const LIST_WORDS *list_words,const int comp_value)
 /*sort the nodes of linked list as the value computed in the process\
  *of creating the linked list
  */
-void sort_list(const LIST_WORDS *list_words,const NODE *newnode)
+void sort_list(LIST_WORDS list_words,NODE *newnode)
 {
 	NODE *node_temp=list_words;
 	for(int i=0;;i++)

@@ -1,6 +1,6 @@
 #include"Filter_words.h"
 
-void FW_print(LIST_WORDS *list_words)
+void FW_print(LIST_WORDS list_words)
 {
 	NODE *node_temp=list_words;
 
@@ -10,12 +10,12 @@ void FW_print(LIST_WORDS *list_words)
 
 	for(int i=0;i<10&&node_temp!=NULL;i++)
 	{
-		printf("\033[40;31m%s\t\t\033[0m%d",node_temp->word_content->word,\
+		printf("\033[40;31m%s\t\t\033[0m%ld",node_temp->word_content->word,\
 		node_temp->word_content->word_number);
 		printf("\n");
 	}
 
-	file_print():
+	file_print();
 }
 
 void file_print()
