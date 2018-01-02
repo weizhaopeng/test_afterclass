@@ -10,14 +10,10 @@ LIST_WORDS FW_readin(void)
 
 	list_words=creat_node(fp);
 	/*add the new word into the linked list*/
-	for(int i=0;feof(fp)!=0;i++)
+	for(int i=0;feof(fp)==0;i++)
 	{
-		node_judge=classify_word(list_words,fp);
-		if(node_judge==NULL)
-			continue;
-		else
-			sort_list(list_words,node_judge);
-
+        /*classify the new word into the link list*/
+		classify_word(list_words,fp);
 		fp_skip_space(fp);
 	}
 	fclose(fp);
@@ -55,6 +51,8 @@ NODE *creat_node(FILE *fp)
 {
 	NODE *node_new;
 	node_new=(NODE *)malloc(sizeof(NODE));
+    node_new->word_content=(WORD*)malloc(sizeof(WORD));
+
 	fscanf(fp,"%s",node_new->word_content->word);
 	file_error(fp);
 	node_new->word_content->word_number++;
@@ -66,11 +64,11 @@ NODE *creat_node(FILE *fp)
 	return node_new; 
 }
 /*creat a node according to the internal information the node*/
-NODE *classify_word(LIST_WORDS list_words,FILE *fp)
+void classify_word(LIST_WORDS list_words,FILE *fp)
 {
 	int comp_value_newword;
 	char array_temp[MAX];
-	NODE *newnode;
+	NODE *newnode,*node_temp=list_words;
 
 	fscanf(fp,"%s",array_temp);
 	file_error(fp);
@@ -78,17 +76,23 @@ NODE *classify_word(LIST_WORDS list_words,FILE *fp)
 	fp_skip_space(fp);
 	
 	if(match_node(list_words,comp_value_newword)==TRUE)
-		return NULL;
+		return;
 	else
 	{
 		newnode=(NODE *)malloc(sizeof(NODE));
+        newnode->word_content=(WORD*)malloc(sizeof(WORD));
+
 		newnode->word_content->word_number++;
 		newnode->word_content->word_value=comp_value_newword;
 		newnode->node_next==NULL;
 		for(int i=0;i<MAX;i++)
 			newnode->word_content->word[i]=array_temp[i];
+        
+        for(;node_temp->node_next!=NULL;)
+            node_temp=node_temp->node_next;
+        node_temp->node_next=newnode;
 	}
-	return newnode;
+	return;
 }
 /*input a word as a array and return the value computed*/
 int comp_value(char arr[])
@@ -128,23 +132,6 @@ BOOL match_node(const LIST_WORDS list_words,const int comp_value)
 		}
 		if(node_temp->node_next==NULL)
 			return FALSE;
-		node_temp=node_temp->node_next;
-	}
-}
-/*sort the nodes of linked list as the value computed in the process\
- *of creating the linked list
- */
-void sort_list(LIST_WORDS list_words,NODE *newnode)
-{
-	NODE *node_temp=list_words;
-	for(int i=0;;i++)
-	{
-		if(newnode->word_content->word_value<=node_temp->\
-		word_content->word_value)
-		{
-			newnode->node_next=node_temp->node_next;
-			node_temp->node_next=newnode;
-		}
 		node_temp=node_temp->node_next;
 	}
 }

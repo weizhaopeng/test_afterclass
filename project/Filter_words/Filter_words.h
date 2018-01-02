@@ -2,6 +2,7 @@
 #define _FILTER_WORDS_
 
 #define MAX 20
+
 #include"general_header.h"
 
 /*每个单词存储的数据*/
@@ -22,20 +23,20 @@ typedef enum{
 	FALSE,
 	TRUE
 }BOOL;
-
+/*generate a linked list containing word information of the document content extracted.*/ 
 LIST_WORDS FW_readin(void);
-void 	   FW_print (LIST_WORDS list_words);
-
-NODE* classify_word (LIST_WORDS list_words,FILE *fp);
-NODE* creat_node	(FILE *fp);
-void  fp_skip_space (FILE *fp);
-
+FILE* acknowledge_fp();
+void  classify_word(LIST_WORDS list_words,FILE *fp);
 BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
-void  sort_list 	(LIST_WORDS list_words,NODE *newnode);
 int   comp_value	(char arr[]);
 void  file_error    (FILE *fp);
+NODE* creat_node	(FILE *fp);
+void  fp_skip_space (FILE *fp);
+/*print the link_list generate from the English file*/
+void  FW_print (LIST_WORDS list_words);
 void  file_print    ();
-FILE* acknowledge_fp();
+
+
 
 
 
