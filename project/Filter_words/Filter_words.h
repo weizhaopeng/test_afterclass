@@ -17,7 +17,7 @@ typedef struct node{
 	struct node *node_next;
 }NODE;
 
-typedef NODE* LIST_WORDS; 
+typedef NODE * LIST_WORDS; 
 
 typedef enum{
 	FALSE,

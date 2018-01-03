@@ -3,7 +3,7 @@
 LIST_WORDS FW_readin(void)
 {
 	FILE *fp;
-	static LIST_WORDS list_words;
+	LIST_WORDS list_words;
 	NODE *node_judge;
 	
 	fp=acknowledge_fp();
@@ -41,7 +41,7 @@ void file_error(FILE *fp)
         puts("open file error");
         exit(-1);
     }
-    if(ferror(fp)==1){
+    if(ferror(fp)!=0){
         puts("file read or write error");
         exit(-1);
     }
@@ -112,9 +112,10 @@ int comp_value(char arr[])
 void fp_skip_space(FILE *fp)
 {
 	char char_temp;
-	for(int i=0;char_temp==' ';i++)
+    do{
 		char_temp=fgetc(fp);
-	fseek(fp,-1L,1);
+    }while(char_temp<'A'||(char_temp>'Z'&&char_temp<'a')||char_temp>'z');
+    fseek(fp,-1L,1);
 }
 /*if cthe value computed of a word equel to one node of the list, \
  *lassify and add it into the linked list
