@@ -26,7 +26,7 @@ typedef enum{
 /*generate a linked list containing word information of the document content extracted.*/ 
 LIST_WORDS FW_readin(void);
 FILE* acknowledge_fp();
-void  classify_word(LIST_WORDS list_words,FILE *fp);
+BOOL  classify_word(LIST_WORDS list_words,FILE *fp);
 BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
 int   comp_value	(char arr[]);
 void  file_error    (FILE *fp);
