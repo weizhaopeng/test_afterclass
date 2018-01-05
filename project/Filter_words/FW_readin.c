@@ -10,16 +10,13 @@ LIST_WORDS FW_readin(void)
 
 	list_words=creat_node(fp);
 	/*add the new word into the linked list*/
-	for(int i=0;;i++)
-	{
-        /*classify the new word into the link list*/
+	do{
 		BOOL JudgeFeof=classify_word(list_words,fp);
         if(JudgeFeof==TRUE)
 		    fp_skip_space(fp);
         else
-            
             break;
-	}
+	}while(1);
 	fclose(fp);
 	return list_words;
 }
@@ -80,10 +77,11 @@ BOOL classify_word(LIST_WORDS list_words,FILE *fp)
         return FALSE;
 	file_error(fp);
 	comp_value_newword=comp_value(array_temp);
-	fp_skip_space(fp);
 	
+    /*if match the computed value in the link list, return the classify result*/
 	if(match_node(list_words,comp_value_newword)==TRUE)
 		return TRUE;
+    /*no match creat a new node to storage the word*/
 	else
 	{
 		newnode=(NODE *)malloc(sizeof(NODE));
@@ -116,13 +114,17 @@ int comp_value(char arr[])
 	return comp_value;
 }
 /*input the point of file and skip the spaces to read the next word*/
-void fp_skip_space(FILE *fp)
+BOOL fp_skip_space(FILE *fp)
 {
 	char char_temp;
     do{
+        if(feof(fp)!=0)
+            return FALSE;
 		char_temp=fgetc(fp);
     }while(char_temp<'A'||(char_temp>'Z'&&char_temp<'a')||char_temp>'z');
+
     fseek(fp,-1L,1);
+    return TRUE;
 }
 /*if cthe value computed of a word equel to one node of the list, \
  *lassify and add it into the linked list
