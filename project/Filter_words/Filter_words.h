@@ -30,8 +30,8 @@ LIST_WORDS FW_readin(void);
 /*get the file point*/
 FILE* acknowledge_fp();
 
-/*divide the word into the link list*/
-BOOL  classify_word(LIST_WORDS list_words,FILE *fp);
+/*creat a node according to the internal information the node*/
+void DivideWordIntoList(LIST_WORDS list_words,char *arr[]);
 
 /*check the compute value can match the node in the list*/
 BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
@@ -39,11 +39,14 @@ BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
 /*compute the value of the word*/
 int   comp_value	(char arr[]);
 
+/*acquire a word from the file. Input:FILE point, Output:char * of a word*/
+char *AcquireWordFromFile(FILE *fp);
+
 /*check the error of the file opend*/
 void  file_error    (FILE *fp);
 
 /*creat a node to storage the word*/
-NODE* creat_node	(FILE *fp);
+NODE* creat_node	(char *arr[]);
 
 /*skip the chars which are not the letter*/
 BOOL  fp_skip_space (FILE *fp);
