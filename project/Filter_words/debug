@@ -1,0 +1,27 @@
+FW_readin.c: In function ‘FW_readin’:
+FW_readin.c:21:28: warning: passing argument 1 of ‘creat_node’ from incompatible pointer type [-Wincompatible-pointer-types]
+      list_words=creat_node(Array);
+                            ^
+In file included from FW_readin.c:1:0:
+Filter_words.h:49:7: note: expected ‘char **’ but argument is of type ‘char *’
+ NODE* creat_node (char *arr[]);
+       ^
+FW_readin.c:31:43: warning: passing argument 2 of ‘DivideWordIntoList’ from incompatible pointer type [-Wincompatible-pointer-types]
+             DivideWordIntoList(list_words,ArrayTemp);
+                                           ^
+In file included from FW_readin.c:1:0:
+Filter_words.h:34:6: note: expected ‘char **’ but argument is of type ‘char *’
+ void DivideWordIntoList(LIST_WORDS list_words,char *arr[]);
+      ^
+FW_readin.c: In function ‘DivideWordIntoList’:
+FW_readin.c:46:34: warning: passing argument 1 of ‘comp_value’ from incompatible pointer type [-Wincompatible-pointer-types]
+     int ValueComputed=comp_value(arr);
+                                  ^
+In file included from FW_readin.c:1:0:
+Filter_words.h:40:7: note: expected ‘char *’ but argument is of type ‘char **’
+ int   comp_value (char arr[]);
+       ^
+FW_readin.c: In function ‘creat_node’:
+FW_readin.c:94:39: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+        node_new->word_content->word[i]=arr[i];
+                                       ^
