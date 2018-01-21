@@ -39,6 +39,9 @@ LIST_WORDS FW_readin(void)
 
 /*
  *
+ *
+ *
+ *
  *creat a node according to the internal information the node*/
 void DivideWordIntoList(LIST_WORDS list_words,char *arr[])
 {
