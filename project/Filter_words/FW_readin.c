@@ -1,9 +1,39 @@
 #include"Filter_words.h"
 
+/*
+ *define the global variate: filename_read, make it can be used in the file 
+ *of FW_printf.c
+ */
+char filename[MAX];
+
+ /*
+ *get the file point
+ */
+FILE* acknowledge_fp();
+
+/*creat a node according to the internal information the node*/
+void DivideWordIntoList(LIST_WORDS list_words,char arr[]);
+
+/*check the compute value can match the node in the list*/
+BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
+
+/*compute the value of the word*/
+int   comp_value	(char arr[]);
+
+/*acquire a word from the file. Input:FILE point, Output:char * of a word*/
+char *AcquireWordFromFile(FILE *fp);
+
+/*check the error of the file opend*/
+void  file_error    (FILE *fp);
+
+/*creat a node to storage the word*/
+NODE* creat_node	(char arr[]);
+
+
 LIST_WORDS FW_readin(void)
 {
 	FILE *fp;
-	LIST_WORDS list_words;
+	static LIST_WORDS list_words;
 	NODE *node_judge;
     char *Array;
     /*acquire the point of file*/
@@ -14,12 +44,13 @@ LIST_WORDS FW_readin(void)
     if(Array==NULL)
     {
         puts("There are no words in the file, please check it");
+		fclose(fp);
         exit(-1);
     }
     else
     {
 	    list_words=creat_node(Array);
-        free(Array);
+        //free has quesion :free(Array);
     }
 
 	/*add the new word into the linked list*/
@@ -29,7 +60,7 @@ LIST_WORDS FW_readin(void)
             break;
         else
             DivideWordIntoList(list_words,ArrayTemp);
-        free(ArrayTemp);
+        //free(ArrayTemp);
 	}while(1);
         
 	fclose(fp);
@@ -43,10 +74,10 @@ LIST_WORDS FW_readin(void)
  *
  *
  *creat a node according to the internal information the node*/
-void DivideWordIntoList(LIST_WORDS list_words,char *arr[])
+void DivideWordIntoList(LIST_WORDS list_words,char arr[])
 {
 	NODE *node_temp=list_words;
-    int ValueComputed=comp_value(arr);
+    int  ValueComputed=comp_value(arr);
     
     do
 	{
@@ -56,8 +87,13 @@ void DivideWordIntoList(LIST_WORDS list_words,char *arr[])
 			node_temp->word_content->word_number++;
             return ;
 		}
-        if(node_temp==NULL)
+
+		/*If no node can be matched then creat a new node to storage*/
+        if(node_temp->node_next==NULL)
+		{
             break;
+		}
+
 		node_temp=node_temp->node_next;
 	}while(1);
 
@@ -87,7 +123,7 @@ int comp_value(char arr[])
  *
  */
 /*creat a node from the file to save the word and return the point of the node*/
-NODE *creat_node(char *arr[])
+NODE *creat_node(char arr[])
 {
 	NODE *node_new;
 	node_new=(NODE *)malloc(sizeof(NODE));
@@ -123,12 +159,12 @@ char *AcquireWordFromFile(FILE *fp)
 /*acknowledge the filename need read*/
 FILE *acknowledge_fp()
 {
-	static char filename_read[MAX];
+	extern char filename[MAX];
     FILE *fp;
 
 	printf("\033[40;41mplease input the name of file\033[0m\n");
-	scanf("%s",filename_read);
-	fp=fopen(filename_read,"r+");
+	scanf("%s",filename);
+	fp=fopen(filename,"r+");
 	file_error(fp);
 	return fp;
 }
@@ -151,7 +187,9 @@ BOOL fp_skip_space(FILE *fp)
     do{
 		char_temp=fgetc(fp);
         if(char_temp==EOF)
+		{
             return FALSE;
+		}
     }while(char_temp<'A'||(char_temp>'Z'&&char_temp<'a')||char_temp>'z');
 
     fseek(fp,-1L,1);
