@@ -1,9 +1,11 @@
 #include"Filter_words.h"
 
 /*the function to print the result of the English file*/
-void  file_print    ();
+void file_print();
+/*sort the list_words as the number of words*/
+void SortList  (LIST_WORDS list_words);
 
-void FW_print(LIST_WORDS list_words)
+void FW_print  (LIST_WORDS list_words)
 {
 	NODE *node_temp=list_words;
 
@@ -22,6 +24,13 @@ void FW_print(LIST_WORDS list_words)
 	file_print();
 }
 
+/*sort the list_words as the number of words*/
+void SortList  (LIST_WORDS list_words)
+{
+	
+}
+	
+/*the function to print the result of the English file*/
 void file_print()
 {
 	extern char filename[MAX];
