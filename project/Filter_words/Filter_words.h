@@ -2,6 +2,7 @@
 #define _FILTER_WORDS_
 
 #define MAX 20
+#define NUMBER_SHOW 10
 
 #include"general_header.h"
 

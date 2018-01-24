@@ -110,7 +110,7 @@ int comp_value(char arr[])
 	{
 		if(arr[i]>='A'&&arr[i]<='Z')
 			arr[i]+=32;
-		comp_value+=(arr[i]-96)*(i+1);
+		comp_value+=(arr[i])*(i+1)+i;
 	}
 	
 	return comp_value;
@@ -147,9 +147,18 @@ NODE *creat_node(char arr[])
 char *AcquireWordFromFile(FILE *fp)
 {
     char *array=(char *)malloc(sizeof(char)*MAX);
+	char ch_temp;
+	int posi=0;
 
-    fscanf(fp,"%s",array);
-    file_error(fp);
+	do{
+		ch_temp=(char)fgetc(fp);
+		file_error(fp);
+
+		*(array+posi)=ch_temp;
+		posi++;
+	}while(ch_temp>='A'&&ch_temp<='Z'||ch_temp>='a'&&ch_temp<='z');
+	*(array+posi)="\0";
+
     if(fp_skip_space(fp)==FALSE)
         return NULL;
     else
