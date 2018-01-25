@@ -82,7 +82,7 @@ void DivideWordIntoList(LIST_WORDS list_words,char arr[])
     do
 	{
         /*if match the computed value in the link list, return the classify result*/
-		if(ValueComputed==node_temp->word_content->word_value)
+		if(strcmp(arr,node_temp->word_content->word)==0)
         {
 			node_temp->word_content->word_number++;
             return ;
@@ -101,7 +101,7 @@ void DivideWordIntoList(LIST_WORDS list_words,char arr[])
     node_temp->node_next=creat_node(arr);
     return ;
 }
-/*input a word as a array and return the value computed*/
+/*input a word as a array and return the value computed
 int comp_value(char arr[])
 {
 	int comp_value=0;
@@ -115,6 +115,7 @@ int comp_value(char arr[])
 	
 	return comp_value;
 }
+ */
 /*
  *
  *
@@ -132,8 +133,6 @@ NODE *creat_node(char arr[])
     for(int i=0;i<MAX;i++)
        node_new->word_content->word[i]=arr[i];
 	node_new->word_content->word_number++;
-	node_new->word_content->word_value=\
-    comp_value(node_new->word_content->word);
 	node_new->node_next=NULL;
 
 	return node_new; 

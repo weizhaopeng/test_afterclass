@@ -10,7 +10,6 @@
 typedef struct{
 	char word[MAX];
 	long word_number;
-	int  word_value;
 }WORD; 
 
 typedef struct node{
