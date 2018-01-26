@@ -156,7 +156,7 @@ char *AcquireWordFromFile(FILE *fp)
 		*(array+posi)=ch_temp;
 		posi++;
 	}while(ch_temp>='A'&&ch_temp<='Z'||ch_temp>='a'&&ch_temp<='z');
-	*(array+posi)="\0";
+	*(array+posi)='\0';
 
     if(fp_skip_space(fp)==FALSE)
         return NULL;
