@@ -5,7 +5,7 @@
 void file_print();
 
 /*sort the list_words as the number of words*/
-NODE **SortList  (LIST_WORDS list_words);
+void NodePrint (LIST_WORDS list_words);
 
 
 /*
@@ -15,19 +15,13 @@ NODE **SortList  (LIST_WORDS list_words);
  */
 void FW_print  (LIST_WORDS list_words)
 {
+	NODE *node_temp;
 	system("clear");
 	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
 
-	NODE *node_temp=list_words;
-	NODE **arr_node_point=SortList(list_words);
-	
-	for(int i=0;i<NUMBER_SHOW&&*(arr_node_point)!=NULL;i++)
-	{
-		printf("\033[40;31m%s\t\t\t\033[0m%ld",*(arr_node_point+i)->word_content->word,\
-		*(arr_node_point+i)->word_content->word_number);
-		printf("\n");
-	}
+	for(int i=0;i<NUMBER_SHOW;i++)
+		NodePrint(list_words);
 
 	printf("\n");
 	file_print();
@@ -39,41 +33,30 @@ void FW_print  (LIST_WORDS list_words)
  *
  *sort the list_words as the number of words
  */
-NODE **SortList(LIST_WORDS list_words)
+void NodePrint(LIST_WORDS list_words)
 {
-	NODE *node_i,*node_temp=list_words;
-	/*acquire the memory to stroage the point of the top nodes*/
-	NODE **arr_node_point=(NODE **)malloc(sizeof(NODE *)*NUMBER_SHOW);
-	static NODE *node_max_wordnum;
+	NODE *node_i,*node_j;
+	NODE *node_max_wordnum,*node_max_before;
 	node_max_wordnum=list_words;
-
-	/*find the max word_number*/
-	for(node_i=list_words ; node_i!=NULL ; node_i=node_i->node_next)
-	{
-		if(node_i->word_content->word_number>node_max_wordnum->word_content->word_number)
-		{
-			node_max_wordnum=node_i;
-			*arr_node_point=node_max_wordnum;
-		}
-	}	
-
-	/*find the other NUMBER_SHOW-1 node*/
-	for(int i=1;i<NUMBER_SHOW;i++)
-	{
-		for(node_i=list_words,node_temp=list_words ; node_i!=NULL ; node_i=node_i->node_next)
-		{
-			if(node_i->word_content->word_number > node_temp->word_content->word_number && \
-			strcmp(node_i->word_content->word,node_max_wordnum->word_content->word) !=0 && \
-			node_i->word_content->word_number <= node_max_wordnum->word_content->word_number)
-			{
-				node_temp=node_i;
-			}
-		}	
-		node_max_wordnum=node_temp;
-		*(arr_node_point+i)=node_max_wordnum;
-	}
 	
-	return arr_node_point;		
+	if(list_words==NULL)
+		return ;
+	else
+	{
+		for(node_max_wordnum=node_i=list_words;node_i!=NULL;node_j=node_i,node_i=node_i->node_next)
+		{
+			if(node_i->word_content->word_number>node_max_wordnum->word_content->word_number)
+				node_max_wordnum=node_i;
+			node_max_before=node_j;
+		}
+	
+		printf("\033[40;31m%s\t\t\t\033[0m%ld",node_max_wordnum->word_content->word,\
+		node_max_wordnum->word_content->word_number);
+	
+		node_max_before->node_next=node_max_wordnum->node_next;
+		free(node_max_before);
+	}
+	return ;
 }
 	
 /*

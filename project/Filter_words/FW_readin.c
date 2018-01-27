@@ -77,7 +77,6 @@ LIST_WORDS FW_readin(void)
 void DivideWordIntoList(LIST_WORDS list_words,char arr[])
 {
 	NODE *node_temp=list_words;
-    int  ValueComputed=comp_value(arr);
     
     do
 	{
