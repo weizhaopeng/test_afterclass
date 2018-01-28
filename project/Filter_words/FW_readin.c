@@ -36,6 +36,7 @@ LIST_WORDS FW_readin(void)
 	static LIST_WORDS list_words;
 	NODE *node_judge;
     char *Array;
+
     /*acquire the point of file*/
 	fp=acknowledge_fp();
 
@@ -48,10 +49,7 @@ LIST_WORDS FW_readin(void)
         exit(-1);
     }
     else
-    {
-	    list_words=creat_node(Array);
-        //free has quesion :free(Array);
-    }
+		list_words=creat_node(Array);
 
 	/*add the new word into the linked list*/
 	do{
@@ -60,7 +58,6 @@ LIST_WORDS FW_readin(void)
             break;
         else
             DivideWordIntoList(list_words,ArrayTemp);
-        //free(ArrayTemp);
 	}while(1);
         
 	fclose(fp);
@@ -71,9 +68,8 @@ LIST_WORDS FW_readin(void)
 /*
  *
  *
- *
- *
- *creat a node according to the internal information the node*/
+ *creat a node according to the internal information the node
+ */
 void DivideWordIntoList(LIST_WORDS list_words,char arr[])
 {
 	NODE *node_temp=list_words;
@@ -100,21 +96,6 @@ void DivideWordIntoList(LIST_WORDS list_words,char arr[])
     node_temp->node_next=creat_node(arr);
     return ;
 }
-/*input a word as a array and return the value computed
-int comp_value(char arr[])
-{
-	int comp_value=0;
-	
-	for (int i=0;arr[i]!='\0';i++)
-	{
-		if(arr[i]>='A'&&arr[i]<='Z')
-			arr[i]+=32;
-		comp_value+=(arr[i])*(i+1)+i;
-	}
-	
-	return comp_value;
-}
- */
 /*
  *
  *
@@ -138,9 +119,8 @@ NODE *creat_node(char arr[])
 }
 /*
  *
+ *
  *acquire a char* point from the file 
- *
- *
  */
 char *AcquireWordFromFile(FILE *fp)
 {
@@ -150,11 +130,19 @@ char *AcquireWordFromFile(FILE *fp)
 
 	do{
 		ch_temp=(char)fgetc(fp);
-		file_error(fp);
+		if(ch_temp>='A'&&ch_temp<='Z'||ch_temp>='a'&&ch_temp<='z')
+		{
+			file_error(fp);
 
-		*(array+posi)=ch_temp;
-		posi++;
-	}while(ch_temp>='A'&&ch_temp<='Z'||ch_temp>='a'&&ch_temp<='z');
+			*(array+posi)=ch_temp;
+			posi++;
+		}
+		else
+		{
+			posi++;
+			break;
+		}
+	}while(1);
 	*(array+posi)='\0';
 
     if(fp_skip_space(fp)==FALSE)
