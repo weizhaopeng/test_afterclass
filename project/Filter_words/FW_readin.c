@@ -12,7 +12,7 @@ char filename[MAX];
 FILE* acknowledge_fp();
 
 /*creat a node according to the internal information the node*/
-void DivideWordIntoList(LIST_WORDS list_words,char arr[]);
+void divide_word_into_list(LIST_WORDS list_words,char arr[]);
 
 /*check the compute value can match the node in the list*/
 BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
@@ -21,7 +21,7 @@ BOOL  match_node	(const LIST_WORDS list_words,const int comp_value);
 int   comp_value	(char arr[]);
 
 /*acquire a word from the file. Input:FILE point, Output:char * of a word*/
-char *AcquireWordFromFile(FILE *fp);
+char *acquire_word_from_file(FILE *fp);
 
 /*check the error of the file opend*/
 void  file_error    (FILE *fp);
@@ -41,7 +41,7 @@ LIST_WORDS FW_readin(void)
 	fp=acknowledge_fp();
 
     /*creat the linked list and the first node*/
-    Array=AcquireWordFromFile(fp);
+    Array=acquire_word_from_file(fp);
     if(Array==NULL)
     {
         puts("There are no words in the file, please check it");
@@ -53,11 +53,14 @@ LIST_WORDS FW_readin(void)
 
 	/*add the new word into the linked list*/
 	do{
-        char *ArrayTemp=AcquireWordFromFile(fp);
+        char *ArrayTemp=acquire_word_from_file(fp);
         if(ArrayTemp==NULL)
             break;
         else
-            DivideWordIntoList(list_words,ArrayTemp);
+		{
+            divide_word_into_list(list_words,ArrayTemp);
+			free(ArrayTemp);
+		}
 	}while(1);
         
 	fclose(fp);
@@ -70,7 +73,7 @@ LIST_WORDS FW_readin(void)
  *
  *creat a node according to the internal information the node
  */
-void DivideWordIntoList(LIST_WORDS list_words,char arr[])
+void divide_word_into_list(LIST_WORDS list_words,char arr[])
 {
 	NODE *node_temp=list_words;
     
@@ -122,7 +125,7 @@ NODE *creat_node(char arr[])
  *
  *acquire a char* point from the file 
  */
-char *AcquireWordFromFile(FILE *fp)
+char *acquire_word_from_file(FILE *fp)
 {
     char *array=(char *)malloc(sizeof(char)*MAX);
 	char ch_temp;

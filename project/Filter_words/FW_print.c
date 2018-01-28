@@ -1,11 +1,10 @@
 #include"Filter_words.h" 
 
-
 /*the function to print the result of the English file*/
 void file_print();
 
 /*sort the list_words as the number of words*/
-void NodePrint (LIST_WORDS list_words);
+void node_print (LIST_WORDS list_words);
 
 
 /*
@@ -22,8 +21,9 @@ void FW_print  (LIST_WORDS list_words)
 	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
 	for(int i=0;i<NUMBER_SHOW;i++)
-		NodePrint(list_words);
+		node_print(list_words);
 	printf("\n");
+	free(list_words);
 
 	/*print the file content*/
 	printf("\033[40;32m******文档的内容为:******\n\033[0m");
@@ -36,7 +36,7 @@ void FW_print  (LIST_WORDS list_words)
  *
  *print the list_words' nodes as the number of words
  */
-void NodePrint(LIST_WORDS list_words)
+void node_print(LIST_WORDS list_words)
 {
 	NODE *node_i,*node_j;
 	NODE *node_max_wordnum,*node_max_before;

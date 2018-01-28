@@ -1,24 +1,32 @@
 #ifndef _FILTER_WORDS_
 #define _FILTER_WORDS_
 
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#include<string.h>
+#include<time.h>
+
+/*the length of word*/
 #define MAX 20
+/*the number of words to show*/
 #define NUMBER_SHOW 10
 
-#include"general_header.h"
 
-/*每个单词存储的数据*/
+/*word information*/
 typedef struct{
 	char word[MAX];
 	long word_number;
 }WORD; 
 
+/*list's node information*/
 typedef struct node{
 	WORD *word_content;
 	struct node *node_next;
 }NODE;
-
 typedef NODE * LIST_WORDS; 
 
+/*Boolean value*/
 typedef enum{
 	FALSE,
 	TRUE
