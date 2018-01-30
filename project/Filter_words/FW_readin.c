@@ -35,7 +35,7 @@ LIST_WORDS FW_readin(void)
 	FILE *fp;
 	static LIST_WORDS list_words;
 	NODE *node_judge;
-    char *Array;
+    char *Array,*ArrayTemp;
 
     /*acquire the point of file*/
 	fp=acknowledge_fp();
@@ -53,7 +53,7 @@ LIST_WORDS FW_readin(void)
 
 	/*add the new word into the linked list*/
 	do{
-        char *ArrayTemp=acquire_word_from_file(fp);
+        ArrayTemp=acquire_word_from_file(fp);
         if(ArrayTemp==NULL)
             break;
         else
