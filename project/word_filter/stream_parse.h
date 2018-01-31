@@ -14,34 +14,48 @@ typedef struct {
 
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
-
+	stream_buffer *sb = (stream_buffer *)malloc(sizeof(stream_buffer));
+	sb->buf           = (char *)malloc(sizeof(char)*(capacity+1));
+	sb->capacity      = capacity;
+	sb->head 		  = sb->tail = 0x00;
+	return sb;
 }
 
 static inline void stream_buffer_destroy(stream_buffer *sb)
 {
-
+	free(sb->buf);
+	free(sb);
 }
 
-static inline int stream_buffer_insert_word(stream_buffer *sb,
+static void stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
-
+	stream_buffer *sb = stream_buffer_create(len);
+	for(int i=0 ; i<len ; i++)
+	{
+		*(sb->buf+i) = *(word+i);
+		tail++;
+	}
+	*(sb->buf)='\0';
 }
 
 static inline int stream_buffer_get_word(stream_buffer *sb,
 						char *word, int len)
 {
-
+	
 }
 
 static inline int stream_buffer_is_empty(steam_buffer *sb)
 {
-
+	if(sb->head == sb->tail)
+		return 1;
+	else 
+		return 0;
 }
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
-
+	
 }
 
 /*

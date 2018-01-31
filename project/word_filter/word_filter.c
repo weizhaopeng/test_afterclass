@@ -6,7 +6,12 @@
 
 int main(int argc, char **argv)
 {
-	step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
+	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
+	for(int i=1 ; i<argc ; i++)
+	{
+		stream_input_parse(*(argv=i));
+
+		
 	step2: 对象初始化，初始化stream buffer和data store
 	step3: stream input流程处理，包括将处理好的word存进stream buffer
 	step4: 依次将stream buffer中的word存进data store中
