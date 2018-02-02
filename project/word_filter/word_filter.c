@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
 	for(int i=1 ; i<argc ; i++)
 	{
-		stream_input_parse(*(argv=i));
+		stream_input_parse(*(argv+i));
 
 		
 	step2: 对象初始化，初始化stream buffer和data store
