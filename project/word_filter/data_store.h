@@ -41,6 +41,6 @@ int data_store_get_max_count(data_store *, data_store_object *, int index);
 /*
  * 数据手动排序，按count的大小顺序
  */
-int data_store_sort(data_store *);
+int  data_store_sort(data_store *);
 
 #endif

@@ -22,31 +22,32 @@ static data_store_list_node *node_find(char *word)
 {
 	data_store_list_node *node_temp;
 
-	for(node_temp=ds_list->head ; 
-	node_temp&& strcmp(word , node_temp->obj->word) != 0;
+	for (node_temp = ds_list->head; 
+	node_temp && strcmp(word, node_temp->obj->word) != 0;
 	node_temp = node_temp->next);
 
 	return node_temp;
 	
 }
 
-static void node_insert(char *word)
+static data_store_list_node *node_insert(char *word)
 {
-	data_store_list_node *node_insert = node_find(word);
+	data_store_list_node *node_insert;
 
-	if(node_insert)
-		node_count_inc(node_insert);
-	else
-	{
-		node_insert = (data_store_list_node *)malloc(sizeof(data_store_list_node));
-		node_insert->obj = (data_store_object *)malloc(sizeof(data_store_object));
+	node_insert      = (data_store_list_node *)malloc(sizeof(data_store_list_node));
+	if(!node_insert) 
+		node_insert = NULL;
 
-		node_insert->obj->word  = word;
-		node_insert->obj->count = 1;
-		ds_list->tail->next     = node_insert;
-		node_insert->prev   	= ds_list->tail;
-		ds_list->tail       	= node_insert;
-	}
+	node_insert->obj = (data_store_object *)malloc(sizeof(data_store_object));
+	if(!node_insert->obj) 
+		node_insrt->obj = NULL;
+
+	node_insert->obj->word  = word;
+	node_insert->obj->count = 1;
+	node_insert->prev   	= ds_list->tail;
+	node_insert->next		= NULL;
+
+	return node_insert;
 }
 
 static void node_free(data_store_list_node *node)
@@ -59,6 +60,18 @@ static void node_free(data_store_list_node *node)
 static void node_count_inc(data_store_list_node *node)
 {
 	node->obj->count++;
+}
+
+static void node_exchange(data_store_list_node *node1, data_store_list_node *node2)
+{
+	data_store_list_node *node_temp;
+
+	node_temp   = node1->next;
+	node1->next = node2->next;
+	node2->next = node_temp;
+	node_temp   = node1->prev;
+	node1->prev = node2->prev;
+	node2->prev = node_temp;
 }
 
 data_store *data_store_create(void)
@@ -84,7 +97,9 @@ data_store *data_store_create(void)
 
 void data_store_destroy(data_store *ds)
 {
-	foreach list node:
+	data_store_list_node *node;
+
+	for(node = ds->priv->priv->head; node; node = node->next) 
 		node_free(node);
 	free(ds->priv);
 	free(ds);
@@ -101,16 +116,28 @@ int data_store_insert_count(data_store *ds, char *word)
 		return 0;
 	}
 
-	node = malloc() and init
+	node 				= node_insert(word);
+	ds_list->tail->next = node_insert;
+	ds_list->tail      	= node_insert;
+	ds_list->count ++;
 }
 
 int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
-
+	data_store_list_node 
 
 }
 
-int data_store_sort(data_store *ds)
+void data_store_sort(data_store *ds)
 {
+	data_store_list_node *node_i, *node_j;
 
+	for(node_i = ds->priv->head; node_i; node_i = node_i->next)
+		for(node_j = node_i->next; node_j; node_j = node_j->next)
+		{
+			if(node_j->obj->count > node_j->obj->count)
+				node_exchange(node_i, node_j);
+		}
+
+	return ;
 }
