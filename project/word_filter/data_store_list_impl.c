@@ -25,7 +25,6 @@ static data_store_list_node *node_find(char *word)
 	for (node_temp = ds_list->head; 
 	node_temp && strcmp(word, node_temp->obj->word) != 0;
 	node_temp = node_temp->next);
-
 	return node_temp;
 	
 }

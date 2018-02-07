@@ -15,7 +15,7 @@ typedef struct {
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
 	stream_buffer *sb = (stream_buffer *)malloc(sizeof(stream_buffer));
-	sb->buf           = (char *)malloc(sizeof(char)*(capacity+1));
+	sb->buf           = (char *)malloc(sizeof(char)*capacity);
 	sb->capacity      = capacity;
 	sb->head 		  = sb->tail = 0;
 	return sb;
