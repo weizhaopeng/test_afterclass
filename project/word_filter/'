@@ -74,22 +74,13 @@ int data_store_insert_count(data_store *ds, char *word)
 
 int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
-	extern int errno;
-	for(uint32_t i = 0; i < index; i++)
-	{
-		if(*(ds->priv->data_store_array->set+i))
-			*(set+i) = *(ds->priv->data_store_array->set+i);
-		else
-			*(set+i) = NULL;
-	}
-	return errno;
+	
 
 }
 
 int data_store_sort(data_store *ds)
 {
 	uint32_t i, j;
-	extern int errno;
 	
 	for(i = 0; i < ds->priv->use; i++)
 		for(j = i; j <ds->priv->use; j++)
@@ -97,5 +88,5 @@ int data_store_sort(data_store *ds)
 			if(*(ds->priv->set+j)->count > *(ds->priv->set+i)->count) 
 				unit_exchange(*(ds->priv->set+i), *(ds->priv->set+j));
 		}
-	return errno;
+	return 0;
 }

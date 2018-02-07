@@ -123,13 +123,26 @@ int data_store_insert_count(data_store *ds, char *word)
 
 int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
-	data_store_list_node 
+	data_store_list_node *node_temp = ds->priv->data_store_list_node;
+	extern int errno;
 
+	for(i = 0 ; i < index ; i++)
+	{
+		if(node_temp)
+		{
+			*(set+i)  = node_temp;
+			node_temp = node_temp->next;
+		}
+		else 
+			*(set+i)  = NULL;
+	}
+	return errno;
 }
 
-void data_store_sort(data_store *ds)
+int data_store_sort(data_store *ds)
 {
 	data_store_list_node *node_i, *node_j;
+	extern int errno;
 
 	for(node_i = ds->priv->head; node_i; node_i = node_i->next)
 		for(node_j = node_i->next; node_j; node_j = node_j->next)
@@ -137,6 +150,5 @@ void data_store_sort(data_store *ds)
 			if(node_j->obj->count > node_j->obj->count)
 				node_exchange(node_i, node_j);
 		}
-
-	return ;
+	return errno;
 }
