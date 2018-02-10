@@ -130,7 +130,7 @@ int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 	{
 		if(node_temp)
 		{
-			*(set+i)  = node_temp;
+			*(set+i)  = node_temp->data_store_object;
 			node_temp = node_temp->next;
 		}
 		else 

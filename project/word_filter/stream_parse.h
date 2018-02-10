@@ -15,7 +15,7 @@ typedef struct {
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
 	stream_buffer *sb = (stream_buffer *)malloc(sizeof(stream_buffer));
-	sb->buf           = (char *)malloc(sizeof(char)*capacity);
+	sb->buf			  = (char *)malloc(sizeof(char)*capacity);
 	sb->capacity      = capacity;
 	sb->head 		  = sb->tail = 0;
 	return sb;
@@ -23,39 +23,52 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 
 static inline void stream_buffer_destroy(stream_buffer *sb)
 {
-	for( ; sb->head < sb->tail ; sb->tail--);
-		free(*(sb->buf+sb->tail));
+	free(sb->buf);
 	free(sb);
 }
 
 static inline void stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
-	char *char_temp = (char)malloc(sizeof(char)*len);
+	if(stream_buffer_is_empty == 0)
+		sb->tail = sb->head;
 	for(int i=0 ; i<len ; i++)
-		*(char_temp+i) = *(word+i);
-	*(char_temp+i) = '\0';
-	sb->tail++;
-	*(buf+sb->tail) = char_temp;
+	{
+		sb->buf[sb->tail] = word[i];
+		sb->tail = (sb->tail+1)%sb->capacity;
+	}
+	sb->buf[sb->tail++] = '\0';
 }
 
 static inline int stream_buffer_get_word(stream_buffer *sb,
 						char *word, int len)
 {
-	
+	extern int errno;
+
+	if(stream_buffer_is_empty)
+		return 1;
+	else
+	{
+		for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
+		{
+			word[i]  = sb->buf[sb->head];
+			sb->head = (sb->head+1)%sb->capacity;
+		}
+		return 0;
+	}
 }
 
-static inline bool stream_buffer_is_empty(steam_buffer *sb)
+static inline int stream_buffer_is_empty(steam_buffer *sb)
 {
-	if(sb->head == sb->tail)
-		return TRUE;
+	if(sb->tail == sb->head)
+		return 1;
 	else 
-		return FALSE;
+		return 0;
 }
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
-	return capacity-(tail-head+1)-1;
+	return (sb->tail - sb->head + sb->capacity) % sb->capacity;
 }
 
 /*

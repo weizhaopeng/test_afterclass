@@ -125,7 +125,7 @@ NODE *creat_node(char arr[])
  *
  *acquire a char* point from the file 
  */
-char *acquire_word_from_file(FILE *fp)
+char *acquire_word_from_file(FIL *fp)
 {
     char *array=(char *)malloc(sizeof(char)*MAX);
 	char ch_temp;
