@@ -38,6 +38,7 @@ static inline void stream_buffer_insert_word(stream_buffer *sb,
 		sb->tail = (sb->tail+1)%sb->capacity;
 	}
 	sb->buf[sb->tail++] = '\0';
+	free(word);
 }
 
 static inline int stream_buffer_get_word(stream_buffer *sb,

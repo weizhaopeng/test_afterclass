@@ -1,45 +1,43 @@
-#include others
+#include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include <data_store.h>
 #include <stream_parse.h>
 
-#define  CAPACITY 
+#define  CAPACITY 1024
 
 int main(int argc, char **argv)
 {
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
-	for(int i=1 ; i<argc && argv[i] ; i++)
+	for(int i=1 ; i<argc ; i++)
 	{
-		char *path = argv[i];
+		char *path = argv[i], *word;
 		size_t len;
-
-		word = stream_input_parse(*(argv+i));
-		len  = strlen(word);
 	//step2: 对象初始化，初始化stream buffer和data store
 		stream_buffer *sb;
 		data_store	  *ds;
-		data_store_objexct *set;
+		data_store_object *set;
 
 		sb = stream_buffer_create(CAPACITY);
 		ds = data_store_create();
 		set = (data_store_object *)malloc(sizeof(data_store_object)*10);
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
-		char  *word;
-		size_t len;
-
 		do {
 			word = stream_input_parse(path);
+			if (word == NULL)
+				break;
 			len  = strlen(word);
-			if(word)
-				stream_buffer_insert_word(sb, word, len);
+			stream_buffer_insert_word(sb, word, len);
 		} while(1);		
 	//step4: 依次将stream buffer中的word存进data store中
 		extern int errno = 0;
-		for( ; ; )
+		while (1)
 		{
 			errno = stream_buffer_get_word(sb, word);
 			if(errno)
 			{
-				strerror(errno);
+				perror();
 				exit(-1);
 			}
 			else
@@ -51,5 +49,5 @@ int main(int argc, char **argv)
 		data_store_print_max_count(set);
 		return 0;
 	}
-备注：有空可以考虑一下，为什么对数据进行多份存储，以及为什么对框架进行这种划分？
+	//备注：有空可以考虑一下，为什么对数据进行多份存储，以及为什么对框架进行这种划分？
 }
