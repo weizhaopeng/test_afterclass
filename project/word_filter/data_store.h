@@ -30,18 +30,18 @@ typedef struct {
  * 数据存储对象的创建和销毁
  */
 data_store *data_store_create(void);
-void        data_store_destroy(data_store *);
+void        data_store_destroy(data_store *ds);
 
 /*
  * 数据的插入和按序查询
  */
-int data_store_insert_count(data_store *, char *word);
-int data_store_get_max_count(data_store *, data_store_object *, int index);
+int data_store_insert_count(data_store *ds, char *word);
+int data_store_get_max_count(data_store *ds, data_store_object *set, int index);
 
 /*
  * 数据手动排序，按count的大小顺序
  */
-int  data_store_sort(data_store *);
+int  data_store_sort(data_store *ds);
 
 /*
  *数据对象打印
