@@ -1,3 +1,6 @@
+#ifndef _OBJECT_PRINT_
+#define _OBJECT_PRINT_
+
 #include <stdio.h>
 
 static void data_store_print_max_count(data_store_object *set)
@@ -10,3 +13,4 @@ static void data_store_print_max_count(data_store_object *set)
 	printf("\n");
 	}
 }
+#endif
