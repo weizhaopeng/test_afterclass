@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <errno.h>
-#include <data_store.h>
-#include <stream_parse.h>
-#include <error_check.h>
-#include <object_print.h>
+#include "data_store.h"
+#include "stream_parse.h"
+#include "error_check.h"
+#include "object_print.h"
 
 #define  CAPACITY 1024
 
@@ -15,12 +15,12 @@ int main(int argc, char **argv)
 		char *path = argv[i], *word;
 		size_t len;
 	//step2: 对象初始化，初始化stream buffer和data store
-		stream_buffer *sb;
-		data_store	  *ds;
+		stream_buffer 	  *sb;
+		data_store	  	  *ds;
 		data_store_object *set;
 
-		sb = stream_buffer_create(CAPACITY);
-		ds = data_store_create();
+		sb  = stream_buffer_create(CAPACITY);
+		ds  = data_store_create();
 		set = (data_store_object *)malloc(sizeof(data_store_object)*10);
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
 		do {
@@ -51,6 +51,7 @@ int main(int argc, char **argv)
 		data_store_error_check(errno);
 
 		data_store_print_max_count(set);
+		stream_buffer_destory	  (sb);
 		data_store_destroy		  (ds);
 		return 0;
 	}

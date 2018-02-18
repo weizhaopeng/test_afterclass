@@ -1,6 +1,8 @@
 #ifndef _STREAM_PARSE_H_
 #define _STREAM_PARSE_H_
 
+#include <stdint.h>
+
 /*
  * 数据流缓冲区
  * 实现为一个环形队列
@@ -27,7 +29,7 @@ static inline void stream_buffer_destroy(stream_buffer *sb)
 	free(sb);
 }
 
-static inline void stream_buffer_insert_word(stream_buffer *sb,
+static void stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
 	if(stream_buffer_is_empty == 0)
@@ -40,7 +42,7 @@ static inline void stream_buffer_insert_word(stream_buffer *sb,
 	sb->buf[sb->tail++] = '\0';
 }
 
-static inline int stream_buffer_get_word(stream_buffer *sb,
+static int stream_buffer_get_word(stream_buffer *sb,
 						char *word, int len)
 {
 	extern int errno;
@@ -68,7 +70,7 @@ static inline int stream_buffer_is_empty(steam_buffer *sb)
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
-	return (sb->tail - sb->head + sb->capacity) % sb->capacity;
+	return ((sb->tail - sb->head + sb->capacity) % sb->capacity);
 }
 
 /*
@@ -76,6 +78,6 @@ static inline int stream_buffer_empty_size(stream_buffer *sb)
  * 实现方式可以为从一个文件或者一个网络，读取相应内容
  * 考虑文本特殊情况包括：各种标点符号，字符大小写，换行，空行等的处理
  */
-int stream_input_parse(char *path);
+char *stream_input_parse(char *path);
 
 #endif

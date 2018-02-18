@@ -1,0 +1,36 @@
+In file included from word_filter.c:4:0:
+stream_parse.h: In function ‘data_store_print_max_count’:
+stream_parse.h:15:3: error: storage class specified for parameter ‘stream_buffer’
+ } stream_buffer;
+   ^
+stream_parse.h:20:29: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+ static inline stream_buffer *stream_buffer_create(uint32_t capacity);
+                             ^
+stream_parse.h:25:42: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
+ static inline void stream_buffer_destroy(stream_buffer *sb);
+                                          ^
+stream_parse.h:30:39: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
+ static void stream_buffer_insert_word(stream_buffer *sb,
+                                       ^
+stream_parse.h:36:35: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
+ static int stream_buffer_get_word(stream_buffer *sb,
+                                   ^
+In file included from word_filter.c:5:0:
+error_check.h:8:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+ {
+ ^
+In file included from word_filter.c:6:0:
+object_print.h:7:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+ {
+ ^
+word_filter.c:11:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+ {
+ ^
+In file included from word_filter.c:3:0:
+data_store.h:50:5: error: old-style parameter declarations in prototyped function definition
+ int data_store_print_max_count(data_store_object *set)
+     ^
+word_filter.c:59:1: error: expected ‘{’ at end of input
+ }
+ ^
+make: *** [word_filter.o] Error 1
