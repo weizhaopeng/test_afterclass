@@ -1,36 +1,120 @@
-In file included from word_filter.c:4:0:
-stream_parse.h: In function ‘data_store_print_max_count’:
-stream_parse.h:15:3: error: storage class specified for parameter ‘stream_buffer’
- } stream_buffer;
-   ^
-stream_parse.h:20:29: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
- static inline stream_buffer *stream_buffer_create(uint32_t capacity);
+data_store_list_impl.c: In function ‘data_store_destroy’:
+data_store_list_impl.c:102:20: warning: dereferencing ‘void *’ pointer
+  for (node=ds->priv->head ; node ; node=node->next) 
+                    ^
+data_store_list_impl.c:102:20: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c: In function ‘data_store_insert_count’:
+data_store_list_impl.c:122:15: warning: dereferencing ‘void *’ pointer
+   if (ds->priv->count ) {
+               ^
+data_store_list_impl.c:122:15: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c:125:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->head  = node;
+            ^
+data_store_list_impl.c:125:12: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c:126:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->tail  = node;
+            ^
+data_store_list_impl.c:126:12: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:127:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->count = 1;
+            ^
+data_store_list_impl.c:127:12: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c:130:29: warning: dereferencing ‘void *’ pointer
+    node->prev     = ds->priv->tail;
                              ^
-stream_parse.h:25:42: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
- static inline void stream_buffer_destroy(stream_buffer *sb);
-                                          ^
-stream_parse.h:30:39: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
- static void stream_buffer_insert_word(stream_buffer *sb,
-                                       ^
-stream_parse.h:36:35: error: expected declaration specifiers or ‘...’ before ‘stream_buffer’
- static int stream_buffer_get_word(stream_buffer *sb,
-                                   ^
-In file included from word_filter.c:5:0:
-error_check.h:8:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
- {
- ^
-In file included from word_filter.c:6:0:
-object_print.h:7:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
- {
- ^
-word_filter.c:11:1: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
- {
- ^
-In file included from word_filter.c:3:0:
-data_store.h:50:5: error: old-style parameter declarations in prototyped function definition
- int data_store_print_max_count(data_store_object *set)
+data_store_list_impl.c:130:29: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:132:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->tail = node;
+            ^
+data_store_list_impl.c:132:12: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:133:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->count++;
+            ^
+data_store_list_impl.c:133:12: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c: In function ‘data_store_get_max_count’:
+data_store_list_impl.c:140:44: warning: dereferencing ‘void *’ pointer
+  data_store_list_node *node_temp = ds->priv->head;
+                                            ^
+data_store_list_impl.c:140:44: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c: In function ‘data_store_sort’:
+data_store_list_impl.c:160:22: warning: dereferencing ‘void *’ pointer
+  for (node_i=ds->priv->head ; node_i ; node_i=node_i->next)
+                      ^
+data_store_list_impl.c:160:22: error: request for member ‘head’ in something not a structure or union
+In file included from stream_parse_file_impl.c:4:0:
+stream_parse.h: In function ‘stream_buffer_insert_word’:
+stream_parse.h:39:5: warning: implicit declaration of function ‘stream_buffer_is_empty’ [-Wimplicit-function-declaration]
+  if(stream_buffer_is_empty(sb) == 0)
      ^
-word_filter.c:59:1: error: expected ‘{’ at end of input
- }
- ^
-make: *** [word_filter.o] Error 1
+stream_parse.h: In function ‘stream_buffer_get_word’:
+stream_parse.h:57:41: error: ‘len’ undeclared (first use in this function)
+   for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
+                                         ^
+stream_parse.h:57:41: note: each undeclared identifier is reported only once for each function it appears in
+stream_parse.h: At top level:
+stream_parse.h:66:19: error: static declaration of ‘stream_buffer_is_empty’ follows non-static declaration
+ static inline int stream_buffer_is_empty(stream_buffer *sb)
+                   ^
+stream_parse.h:39:5: note: previous implicit declaration of ‘stream_buffer_is_empty’ was here
+  if(stream_buffer_is_empty(sb) == 0)
+     ^
+stream_parse_file_impl.c: In function ‘stream_input_parse’:
+stream_parse_file_impl.c:18:3: error: too few arguments to function ‘perror’
+   perror();
+   ^
+In file included from stream_parse_file_impl.c:1:0:
+/usr/include/stdio.h:846:13: note: declared here
+ extern void perror (const char *__s);
+             ^
+stream_parse_file_impl.c:28:10: warning: implicit declaration of function ‘stream_buffer_fp_skip_space’ [-Wimplicit-function-declaration]
+       if(stream_buffer_fp_skip_space(fp) == 0)
+          ^
+stream_parse_file_impl.c: At top level:
+stream_parse_file_impl.c:37:19: error: static declaration of ‘stream_buffer_fp_skip_space’ follows non-static declaration
+ static inline int stream_buffer_fp_skip_space(FILE *fp)
+                   ^
+stream_parse_file_impl.c:28:10: note: previous implicit declaration of ‘stream_buffer_fp_skip_space’ was here
+       if(stream_buffer_fp_skip_space(fp) == 0)
+          ^
+In file included from word_filter.c:6:0:
+stream_parse.h: In function ‘stream_buffer_insert_word’:
+stream_parse.h:39:5: warning: implicit declaration of function ‘stream_buffer_is_empty’ [-Wimplicit-function-declaration]
+  if(stream_buffer_is_empty(sb) == 0)
+     ^
+stream_parse.h: In function ‘stream_buffer_get_word’:
+stream_parse.h:57:41: error: ‘len’ undeclared (first use in this function)
+   for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
+                                         ^
+stream_parse.h:57:41: note: each undeclared identifier is reported only once for each function it appears in
+stream_parse.h: At top level:
+stream_parse.h:66:19: error: static declaration of ‘stream_buffer_is_empty’ follows non-static declaration
+ static inline int stream_buffer_is_empty(stream_buffer *sb)
+                   ^
+stream_parse.h:39:5: note: previous implicit declaration of ‘stream_buffer_is_empty’ was here
+  if(stream_buffer_is_empty(sb) == 0)
+     ^
+In file included from /usr/include/errno.h:35:0,
+                 from word_filter.c:2:
+error_check.h: In function ‘data_store_error_check’:
+error_check.h:9:13: error: ‘__errno_location’ has both ‘extern’ and initializer
+  extern int errno = error_number;
+             ^
+In file included from word_filter.c:7:0:
+error_check.h:9:2: error: function ‘__errno_location’ is initialized like a variable
+  extern int errno = error_number;
+  ^
+In file included from /usr/include/errno.h:35:0,
+                 from word_filter.c:2:
+error_check.h:9:13: error: nested function ‘__errno_location’ declared but never defined
+  extern int errno = error_number;
+             ^
+word_filter.c: In function ‘main’:
+word_filter.c:57:3: warning: implicit declaration of function ‘stream_buffer_destory’ [-Wimplicit-function-declaration]
+   stream_buffer_destory   (sb);
+   ^
+In file included from word_filter.c:5:0:
+word_filter.c: At top level:
+data_store.h:50:20: warning: ‘data_store_print_max_count’ used but never defined
+ static inline void data_store_print_max_count(data_store_object *set);
+                    ^

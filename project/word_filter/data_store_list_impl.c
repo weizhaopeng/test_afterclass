@@ -7,10 +7,10 @@
 /*
  * 双向链表的实现形式
  */
-typedef struct {
-	data_store_object    *obj;
-	data_store_list_node *next;
-	data_store_list_node *prev;
+typedef struct list_node {
+	data_store_object *obj;
+	struct list_node  *next;
+	struct list_node  *prev;
 } data_store_list_node;
 
 typedef struct {
@@ -20,7 +20,7 @@ typedef struct {
 } data_store_list;
 
 /*list operations here!*/
-static data_store_list_node *node_find(char *word)
+static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 {
 	data_store_list_node *node_temp;
 
@@ -49,9 +49,12 @@ static data_store_list_node *node_insert(char *word)
 
 static void node_free(data_store_list_node *node)
 {
-	free(node->obj->word);
-	free(node->obj);
-	free(node);
+	if (node->obj->word)
+		free(node->obj->word);
+	if (node->obj)
+		free(node->obj);
+	if (node)
+		free(node);
 }
 
 static void node_count_inc(data_store_list_node *node)
@@ -97,34 +100,36 @@ void data_store_destroy(data_store *ds)
 	data_store_list_node *node;
 
 	for (node=ds->priv->head ; node ; node=node->next) 
-		node_free(node);
-	free(ds->priv);
-	free(ds);
-
+		if (node)
+			node_free(node);
+	if (ds->priv)
+		free(ds->priv);
+	if (ds)
+		free(ds);
 }
 
 int data_store_insert_count(data_store *ds, char *word)
 {
-	data_store_list_node *node_insert = NULL;
+	data_store_list_node *node = NULL;
 
-	node = node_find(word);
+	node = node_find(ds->priv,word);
 	if (node) {
 		node_count_inc(node);
 		return 0;
 	}
 	else {
-		node_insert	= node_insert(word);
-		if (!ds->priv->count) {
-			node_insert->prev = NULL;
-			node_insert->next = NULL;
-			ds->priv->head    = node_insert;
-			ds->priv->tail    = node_insert;
-			ds->priv->count   = 1;
+		node = node_insert(word);
+		if (ds->priv->count ) {
+			node->prev 		= NULL;
+			node->next 		= NULL;
+			ds->priv->head  = node;
+			ds->priv->tail  = node;
+			ds->priv->count = 1;
 		}
 		else {
-			node_insert->prev = ds->priv->tail;
-			node_insert->next = NULL;
-			ds->priv->tail	  = node_insert;
+			node->prev 	   = ds->priv->tail;
+			node->next 	   = NULL;
+			ds->priv->tail = node;
 			ds->priv->count++;
 		}
 	}
@@ -132,14 +137,14 @@ int data_store_insert_count(data_store *ds, char *word)
 
 int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
-	data_store_list_node *node_temp = ds->priv->data_store_list_node;
+	data_store_list_node *node_temp = ds->priv->head;
 	extern int errno;
 
-	for (i=0 ; i<index ; i++) {
+	for (int i=0 ; i<index ; i++) {
 		if (node_temp) {
-			set[i].word  = node_temp->data_store_object->word;
-			set[i].count = node_temp->data_store_object->count;
-			node_temp = node_temp->next;
+			set[i].word  = node_temp->obj->word;
+			set[i].count = node_temp->obj->count;
+			node_temp 	 = node_temp->next;
 		}
 		else 
 			return errno;
@@ -160,3 +165,14 @@ int data_store_sort(data_store *ds)
 		}
 	return errno;
 }
+
+static inline void data_store_print_max_count(data_store_object *set)
+{
+	system("clear");
+	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");
+	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
+	for (int i=0 ; i<10 ; i++)
+		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
+	printf("\n");
+}
+

@@ -2,6 +2,8 @@
 #define _STREAM_PARSE_H_
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /*
  * 数据流缓冲区
@@ -23,16 +25,18 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 	return sb;
 }
 
-static inline void stream_buffer_destroy(stream_buffer *sb)
+void stream_buffer_destroy(stream_buffer *sb)
 {
-	free(sb->buf);
-	free(sb);
+	if(sb->buf)
+		free(sb->buf);
+	if(sb)
+		free(sb);
 }
 
 static void stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
-	if(stream_buffer_is_empty == 0)
+	if(stream_buffer_is_empty(sb) == 0)
 		sb->tail = sb->head;
 	for(int i=0 ; i<len ; i++)
 	{
@@ -42,12 +46,11 @@ static void stream_buffer_insert_word(stream_buffer *sb,
 	sb->buf[sb->tail++] = '\0';
 }
 
-static int stream_buffer_get_word(stream_buffer *sb,
-						char *word, int len)
+static int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
 	extern int errno;
 
-	if(stream_buffer_is_empty)
+	if(stream_buffer_is_empty(sb))
 		return 1;
 	else
 	{
@@ -60,7 +63,7 @@ static int stream_buffer_get_word(stream_buffer *sb,
 	}
 }
 
-static inline int stream_buffer_is_empty(steam_buffer *sb)
+static inline int stream_buffer_is_empty(stream_buffer *sb)
 {
 	if(sb->tail == sb->head)
 		return 1;

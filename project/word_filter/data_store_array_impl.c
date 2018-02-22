@@ -83,7 +83,8 @@ int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 
 	for(uint32_t i = 0; i < index; i++)
 	{
-		if(ds->priv->set[i]) {
+		if(ds->priv->set[i]) 
+		{
 			set[i].word  = ds->priv->->set[i].word;
 			set[i].count = ds->priv->->set[i].count;
 		}
@@ -99,11 +100,9 @@ int data_store_sort(data_store *ds)
 	uint32_t i, j;
 	extern int errno;
 	
-	for(i = 0; i < ds->priv->use; i++) {
-		for(j = i; j <ds->priv->use; j++) {
+	for(i = 0; i < ds->priv->use; i++) 
+		for(j = i; j <ds->priv->use; j++) 
 			if(ds->priv->set[j].count > ds->priv->set[i].count) 
 				unit_exchange(ds->priv->set[i], ds->priv->set[j]);
-		}
-	}
 	return errno;
 }

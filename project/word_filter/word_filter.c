@@ -1,18 +1,21 @@
 #include <stdio.h>
 #include <errno.h>
+#include <stdint.h>
+#include <string.h>
 #include "data_store.h"
 #include "stream_parse.h"
 #include "error_check.h"
-#include "object_print.h"
 
 #define  CAPACITY 1024
+
+int errno;
 
 int main(int argc, char **argv)
 {
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
 	for (int i=1 ; i<argc ; i++)
 	{
-		char *path = argv[i], *word;
+		char  *path = argv[i], *word;
 		size_t len;
 	//step2: 对象初始化，初始化stream buffer和data store
 		stream_buffer 	  *sb;
