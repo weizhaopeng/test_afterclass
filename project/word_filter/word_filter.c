@@ -8,6 +8,8 @@
 
 #define  CAPACITY 1024
 
+void stream_buffer_destroy(stream_buffer *sb);
+
 int errno;
 
 int main(int argc, char **argv)

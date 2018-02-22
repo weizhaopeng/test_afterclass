@@ -90,7 +90,7 @@ data_store *data_store_create(void)
 	}
 
 	ds->type = DATA_STORE_TYPE_LIST;
-	ds->priv = ds_list;
+	(data_store_list)ds->priv = ds_list;
 
 	return ds;
 }
@@ -166,7 +166,7 @@ int data_store_sort(data_store *ds)
 	return errno;
 }
 
-static inline void data_store_print_max_count(data_store_object *set)
+void data_store_print_max_count(data_store_object *set)
 {
 	system("clear");
 	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");

@@ -5,6 +5,8 @@
 
 #define WORD_SIZE 20
 
+static inline int stream_buffer_fp_skip_space(FILE *fp);
+
 char *stream_input_parse(char *path)
 {
 	FILE	  *fp;
@@ -15,7 +17,7 @@ char *stream_input_parse(char *path)
 	fp = fopen(path, "r+");
 	if (fp == NULL)
 	{	
-		perror();
+		perror("");
 		return NULL;
 	}
 

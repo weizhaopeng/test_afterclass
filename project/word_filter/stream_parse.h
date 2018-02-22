@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+static inline int stream_buffer_is_empty(stream_buffer *sb);
+
 /*
  * 数据流缓冲区
  * 实现为一个环形队列
@@ -54,11 +57,10 @@ static int stream_buffer_get_word(stream_buffer *sb, char *word)
 		return 1;
 	else
 	{
-		for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
-		{
+		do {
 			word[i]  = sb->buf[sb->head];
 			sb->head = (sb->head+1)%sb->capacity;
-		}
+		} while (sb->head != sb->tail && word[i] != '\0');
 		return 0;
 	}
 }

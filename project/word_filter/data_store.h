@@ -47,6 +47,6 @@ int  data_store_sort(data_store *ds);
 /*
  *数据对象打印
  */
-static inline void data_store_print_max_count(data_store_object *set);
+void data_store_print_max_count(data_store_object *set);
 	
 #endif
