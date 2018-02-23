@@ -5,6 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define WF_SB_EMPTY  	1
+#define WF_SB_NOTEMPTY 	0
+
+#define WF_SB_FULL 		1
+#define WF_SB_NOTFULL	0
+
+#define WF_GET FAIL		1
+#define WF_GET_OK		0
+
+#define WF_INSERT_OK 0
 
 static inline int stream_buffer_is_empty(stream_buffer *sb);
 
@@ -21,8 +31,16 @@ typedef struct {
 
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
-	stream_buffer *sb = (stream_buffer *)malloc(sizeof(stream_buffer));
-	sb->buf			  = (char *)malloc(sizeof(char)*capacity);
+	stream_buffer *sb; 
+
+	sb = (stream_buffer *)malloc(sizeof(stream_buffer));
+	if (!sb)
+		return NULL;
+
+	sb->buf	= (char *)malloc(sizeof(char)*capacity);
+	if (!sb->buf)
+		return NULL;
+
 	sb->capacity      = capacity;
 	sb->head 		  = sb->tail = 0;
 	return sb;
@@ -36,41 +54,41 @@ void stream_buffer_destroy(stream_buffer *sb)
 		free(sb);
 }
 
-static void stream_buffer_insert_word(stream_buffer *sb,
+static inline int stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
-	if(stream_buffer_is_empty(sb) == 0)
-		sb->tail = sb->head;
-	for(int i=0 ; i<len ; i++)
-	{
-		sb->buf[sb->tail] = word[i];
-		sb->tail = (sb->tail+1)%sb->capacity;
+	if (stream_buffer_empty_size(sb) <= len)
+		return WF_SB_FULL;
+	else {
+		for(int i = 0; i < len; i++) {
+			sb->buf[sb->tail] = word[i];
+			sb->tail = (sb->tail+1)%sb->capacity;
+		}
+		sb->buf[sb->tail] = '\0';
+		return WF_INSERT_OK;
 	}
-	sb->buf[sb->tail++] = '\0';
 }
 
 static int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
-	extern int errno;
-
 	if(stream_buffer_is_empty(sb))
-		return 1;
+		return WF_GET_FAIL;
 	else
 	{
 		do {
 			word[i]  = sb->buf[sb->head];
 			sb->head = (sb->head+1)%sb->capacity;
-		} while (sb->head != sb->tail && word[i] != '\0');
-		return 0;
+		} while (!stream_buffer_is_empty(sb) && word[i] != '\0');
+		return WF_GET_OK;
 	}
 }
 
 static inline int stream_buffer_is_empty(stream_buffer *sb)
 {
 	if(sb->tail == sb->head)
-		return 1;
+		return WF_EMPTY;
 	else 
-		return 0;
+		return WF_NOTEMPTY;
 }
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)

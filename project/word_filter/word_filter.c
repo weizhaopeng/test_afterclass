@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <errno.h>
 #include <stdint.h>
 #include <string.h>
 #include "data_store.h"
@@ -36,11 +35,11 @@ int main(int argc, char **argv)
 			stream_buffer_insert_word(sb, word, len);
 		} while(1);		
 	//step4: 依次将stream buffer中的word存进data store中
-		extern int errno;
+		int ret;
 		while (1)
 		{
-			errno = stream_buffer_get_word(sb, word);
-			if(errno)
+			ret = stream_buffer_get_word(sb, word);
+			if(ret)
 			{
 				perror("");
 				exit(-1);
@@ -49,12 +48,12 @@ int main(int argc, char **argv)
 				data_store_insert_count(ds, word);
 		}
 	//step5: 对data store进行排序，然后获取个数最多的10个word，打印
-		errno = data_store_sort(ds);
-		data_store_error_check(errno);
-
-		errno = data_store_get_max_count(ds, set, 10);
-		data_store_error_check(errno);
-
+		data_store_sort(ds);
+			
+		ret = data_store_get_max_count(ds, set, 10);
+		if (ret)
+		{
+			
 		data_store_print_max_count(set);
 		stream_buffer_destory	  (sb);
 		data_store_destroy		  (ds);

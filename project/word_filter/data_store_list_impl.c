@@ -152,10 +152,9 @@ int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 	return errno;
 }
 
-int data_store_sort(data_store *ds)
+void data_store_sort(data_store *ds)
 {
 	data_store_list_node *node_i, *node_j;
-	extern int errno;
 
 	for (node_i=ds->priv->head ; node_i ; node_i=node_i->next)
 		for (node_j=node_i->next ; node_j ; node_j=node_j->next)
@@ -163,7 +162,6 @@ int data_store_sort(data_store *ds)
 			if (node_j->obj->count > node_j->obj->count)
 				node_exchange(node_i, node_j);
 		}
-	return errno;
 }
 
 void data_store_print_max_count(data_store_object *set)
