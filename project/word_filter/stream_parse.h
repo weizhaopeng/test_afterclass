@@ -5,16 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define WF_SB_EMPTY  	1
-#define WF_SB_NOTEMPTY 	0
+#define WF_SB_EMPTY  	 0
+#define WF_SB_NOTEMPTY 	 1
 
-#define WF_SB_FULL 		1
-#define WF_SB_NOTFULL	0
+#define WF_SB_FULL 		 1
+#define WF_SB_NOTFULL	 0
 
-#define WF_GET FAIL		1
-#define WF_GET_OK		0
-
-#define WF_INSERT_OK 0
+#define WORD_GET__OK	 0 
+#define WORD_INSERT_OK 	 0
 
 static inline int stream_buffer_is_empty(stream_buffer *sb);
 
@@ -71,16 +69,11 @@ static inline int stream_buffer_insert_word(stream_buffer *sb,
 
 static int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
-	if(stream_buffer_is_empty(sb))
-		return WF_GET_FAIL;
-	else
-	{
-		do {
-			word[i]  = sb->buf[sb->head];
-			sb->head = (sb->head+1)%sb->capacity;
-		} while (!stream_buffer_is_empty(sb) && word[i] != '\0');
-		return WF_GET_OK;
-	}
+	do {
+		word[i]  = sb->buf[sb->head];
+		sb->head = (sb->head+1)%sb->capacity;
+	} while (word[i] != '\0');
+	return WORD_GET_OK;
 }
 
 static inline int stream_buffer_is_empty(stream_buffer *sb)

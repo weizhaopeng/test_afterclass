@@ -1,61 +1,77 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
 #include "data_store.h"
 #include "stream_parse.h"
-#include "error_check.h"
 
 #define  CAPACITY 1024
 
 void stream_buffer_destroy(stream_buffer *sb);
 
-int errno;
-
 int main(int argc, char **argv)
 {
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
+	char  *path = argv[i], *word;
+	size_t len;
+	int    ret;
 	for (int i=1 ; i<argc ; i++)
 	{
-		char  *path = argv[i], *word;
-		size_t len;
 	//step2: 对象初始化，初始化stream buffer和data store
 		stream_buffer 	  *sb;
 		data_store	  	  *ds;
 		data_store_object *set;
 
 		sb  = stream_buffer_create(CAPACITY);
+		if (!sb) {
+			puts("memory error!");
+			continue;
+		}
+	
 		ds  = data_store_create();
+		if (!ds) {
+			puts("memory error!");
+			continue;
+		}
+
 		set = (data_store_object *)malloc(sizeof(data_store_object)*10);
+		if (!set) {
+			puts("memory error!");
+			return 1;
+		}
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
-		do {
-			word = stream_input_parse(path);
-			if (word == NULL)
-				break;
-			len = strlen(word);
-			stream_buffer_insert_word(sb, word, len);
-		} while(1);		
+		ret = stream_input_parse(path);
+		if (ret == ENOENT) {
+			puts("no such file");
+			continue;
+		}
+		if (ret == ENOMEM) {
+			puts("memory error");
+			continue;
+		if (ret == WF_SB_FULL) {
+			puts("stream_buffer full");
+			continue;
+		}
+		}
 	//step4: 依次将stream buffer中的word存进data store中
-		int ret;
 		while (1)
 		{
-			ret = stream_buffer_get_word(sb, word);
-			if(ret)
-			{
-				perror("");
-				exit(-1);
+			if(!stream_buffer_is_empty(sb))
+				break;
+
+			stream_buffer_get_word(sb, word);
+
+			ret =data_store_insert_count(ds, word);
+			if (ret == WF_WORD_INSERT_FAIL) {
+				puts("word insert failed");
+				continue;
 			}
-			else
-				data_store_insert_count(ds, word);
 		}
 	//step5: 对data store进行排序，然后获取个数最多的10个word，打印
 		data_store_sort(ds);
 			
-		ret = data_store_get_max_count(ds, set, 10);
-		if (ret)
-		{
+		data_store_get_max_count(ds, set, 10);
 			
 		data_store_print_max_count(set);
+
 		stream_buffer_destory	  (sb);
+		
 		data_store_destroy		  (ds);
 		return 0;
 	}

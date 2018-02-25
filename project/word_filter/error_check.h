@@ -3,7 +3,4 @@
 
 #include <errno.h>
 
-#define WF_ENOENT 	ENOENT
-#define WF_ENOMEM 	ENOMEM
-
 #endif

@@ -1,4 +1,4 @@
-#include <errno.h>
+#include <errno_check.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@ static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 	for (node_temp = ds_list->head ; node_temp ; node_temp = node_temp->next)
 		if (strcmp(word, node_temp->obj->word) != 0)
 			return node_temp;
+
 	return NULL;
 }
 
@@ -90,7 +91,7 @@ data_store *data_store_create(void)
 	}
 
 	ds->type = DATA_STORE_TYPE_LIST;
-	(data_store_list)ds->priv = ds_list;
+	(data_store_list *)ds->priv = ds_list;
 
 	return ds;
 }
@@ -119,6 +120,9 @@ int data_store_insert_count(data_store *ds, char *word)
 	}
 	else {
 		node = node_insert(word);
+		if (!node)
+			return WF_WORD_INSERT_FAIL;
+
 		if (ds->priv->count ) {
 			node->prev 		= NULL;
 			node->next 		= NULL;
@@ -127,18 +131,17 @@ int data_store_insert_count(data_store *ds, char *word)
 			ds->priv->count = 1;
 		}
 		else {
-			node->prev 	   = ds->priv->tail;
-			node->next 	   = NULL;
-			ds->priv->tail = node;
-			ds->priv->count++;
+			node->prev 	    = ds->priv->tail;
+			node->next 	    = NULL;
+			ds->priv->tail  = node;
+			ds->priv->count = 1;
 		}
 	}
 }
 
-int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
+void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
 	data_store_list_node *node_temp = ds->priv->head;
-	extern int errno;
 
 	for (int i=0 ; i<index ; i++) {
 		if (node_temp) {
@@ -147,9 +150,8 @@ int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 			node_temp 	 = node_temp->next;
 		}
 		else 
-			return errno;
+			set[i] = NULL;
 	}
-	return errno;
 }
 
 void data_store_sort(data_store *ds)
