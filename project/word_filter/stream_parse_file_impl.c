@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stream_parse.h>
-#include <error_check.h>
+#include "stream_parse.h"
+#include "error_check.h"
 
 #define WORD_SIZE 20
 

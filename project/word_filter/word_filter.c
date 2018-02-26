@@ -1,18 +1,21 @@
 #include "data_store.h"
 #include "stream_parse.h"
+#include "error_check.h"
 
-#define  CAPACITY 1024
+#define CAPACITY 			1024
+#define WF_WORD_INSERT_FAIL 1
 
-void stream_buffer_destroy(stream_buffer *sb);
+static inline void stream_buffer_destroy(stream_buffer *sb);
 
 int main(int argc, char **argv)
 {
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
-	char  *path = argv[i], *word;
+	char  *path, *word;
 	size_t len;
 	int    ret;
 	for (int i=1 ; i<argc ; i++)
 	{
+		path = argv[i];
 	//step2: 对象初始化，初始化stream buffer和data store
 		stream_buffer 	  *sb;
 		data_store	  	  *ds;

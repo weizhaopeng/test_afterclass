@@ -1,120 +1,85 @@
-data_store_list_impl.c: In function ‘data_store_destroy’:
-data_store_list_impl.c:102:20: warning: dereferencing ‘void *’ pointer
-  for (node=ds->priv->head ; node ; node=node->next) 
-                    ^
-data_store_list_impl.c:102:20: error: request for member ‘head’ in something not a structure or union
-data_store_list_impl.c: In function ‘data_store_insert_count’:
-data_store_list_impl.c:122:15: warning: dereferencing ‘void *’ pointer
-   if (ds->priv->count ) {
-               ^
-data_store_list_impl.c:122:15: error: request for member ‘count’ in something not a structure or union
-data_store_list_impl.c:125:12: warning: dereferencing ‘void *’ pointer
-    ds->priv->head  = node;
-            ^
-data_store_list_impl.c:125:12: error: request for member ‘head’ in something not a structure or union
-data_store_list_impl.c:126:12: warning: dereferencing ‘void *’ pointer
-    ds->priv->tail  = node;
-            ^
-data_store_list_impl.c:126:12: error: request for member ‘tail’ in something not a structure or union
-data_store_list_impl.c:127:12: warning: dereferencing ‘void *’ pointer
-    ds->priv->count = 1;
-            ^
-data_store_list_impl.c:127:12: error: request for member ‘count’ in something not a structure or union
-data_store_list_impl.c:130:29: warning: dereferencing ‘void *’ pointer
-    node->prev     = ds->priv->tail;
-                             ^
-data_store_list_impl.c:130:29: error: request for member ‘tail’ in something not a structure or union
-data_store_list_impl.c:132:12: warning: dereferencing ‘void *’ pointer
-    ds->priv->tail = node;
-            ^
-data_store_list_impl.c:132:12: error: request for member ‘tail’ in something not a structure or union
-data_store_list_impl.c:133:12: warning: dereferencing ‘void *’ pointer
-    ds->priv->count++;
-            ^
-data_store_list_impl.c:133:12: error: request for member ‘count’ in something not a structure or union
-data_store_list_impl.c: In function ‘data_store_get_max_count’:
-data_store_list_impl.c:140:44: warning: dereferencing ‘void *’ pointer
-  data_store_list_node *node_temp = ds->priv->head;
-                                            ^
-data_store_list_impl.c:140:44: error: request for member ‘head’ in something not a structure or union
-data_store_list_impl.c: In function ‘data_store_sort’:
-data_store_list_impl.c:160:22: warning: dereferencing ‘void *’ pointer
-  for (node_i=ds->priv->head ; node_i ; node_i=node_i->next)
-                      ^
-data_store_list_impl.c:160:22: error: request for member ‘head’ in something not a structure or union
-In file included from stream_parse_file_impl.c:4:0:
-stream_parse.h: In function ‘stream_buffer_insert_word’:
-stream_parse.h:39:5: warning: implicit declaration of function ‘stream_buffer_is_empty’ [-Wimplicit-function-declaration]
-  if(stream_buffer_is_empty(sb) == 0)
-     ^
-stream_parse.h: In function ‘stream_buffer_get_word’:
-stream_parse.h:57:41: error: ‘len’ undeclared (first use in this function)
-   for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
-                                         ^
-stream_parse.h:57:41: note: each undeclared identifier is reported only once for each function it appears in
-stream_parse.h: At top level:
-stream_parse.h:66:19: error: static declaration of ‘stream_buffer_is_empty’ follows non-static declaration
- static inline int stream_buffer_is_empty(stream_buffer *sb)
-                   ^
-stream_parse.h:39:5: note: previous implicit declaration of ‘stream_buffer_is_empty’ was here
-  if(stream_buffer_is_empty(sb) == 0)
-     ^
-stream_parse_file_impl.c: In function ‘stream_input_parse’:
-stream_parse_file_impl.c:18:3: error: too few arguments to function ‘perror’
-   perror();
-   ^
-In file included from stream_parse_file_impl.c:1:0:
-/usr/include/stdio.h:846:13: note: declared here
- extern void perror (const char *__s);
-             ^
-stream_parse_file_impl.c:28:10: warning: implicit declaration of function ‘stream_buffer_fp_skip_space’ [-Wimplicit-function-declaration]
-       if(stream_buffer_fp_skip_space(fp) == 0)
-          ^
-stream_parse_file_impl.c: At top level:
-stream_parse_file_impl.c:37:19: error: static declaration of ‘stream_buffer_fp_skip_space’ follows non-static declaration
- static inline int stream_buffer_fp_skip_space(FILE *fp)
-                   ^
-stream_parse_file_impl.c:28:10: note: previous implicit declaration of ‘stream_buffer_fp_skip_space’ was here
-       if(stream_buffer_fp_skip_space(fp) == 0)
-          ^
-In file included from word_filter.c:6:0:
-stream_parse.h: In function ‘stream_buffer_insert_word’:
-stream_parse.h:39:5: warning: implicit declaration of function ‘stream_buffer_is_empty’ [-Wimplicit-function-declaration]
-  if(stream_buffer_is_empty(sb) == 0)
-     ^
-stream_parse.h: In function ‘stream_buffer_get_word’:
-stream_parse.h:57:41: error: ‘len’ undeclared (first use in this function)
-   for(int i=0 ; sb->head!=sb->tail && i<len ; i++)
-                                         ^
-stream_parse.h:57:41: note: each undeclared identifier is reported only once for each function it appears in
-stream_parse.h: At top level:
-stream_parse.h:66:19: error: static declaration of ‘stream_buffer_is_empty’ follows non-static declaration
- static inline int stream_buffer_is_empty(stream_buffer *sb)
-                   ^
-stream_parse.h:39:5: note: previous implicit declaration of ‘stream_buffer_is_empty’ was here
-  if(stream_buffer_is_empty(sb) == 0)
-     ^
-In file included from /usr/include/errno.h:35:0,
-                 from word_filter.c:2:
-error_check.h: In function ‘data_store_error_check’:
-error_check.h:9:13: error: ‘__errno_location’ has both ‘extern’ and initializer
-  extern int errno = error_number;
-             ^
-In file included from word_filter.c:7:0:
-error_check.h:9:2: error: function ‘__errno_location’ is initialized like a variable
-  extern int errno = error_number;
-  ^
-In file included from /usr/include/errno.h:35:0,
-                 from word_filter.c:2:
-error_check.h:9:13: error: nested function ‘__errno_location’ declared but never defined
-  extern int errno = error_number;
-             ^
 word_filter.c: In function ‘main’:
-word_filter.c:57:3: warning: implicit declaration of function ‘stream_buffer_destory’ [-Wimplicit-function-declaration]
+word_filter.c:42:28: warning: passing argument 1 of ‘stream_input_parse’ from incompatible pointer type [-Wincompatible-pointer-types]
+   ret = stream_input_parse(path);
+                            ^
+In file included from word_filter.c:2:0:
+stream_parse.h:102:5: note: expected ‘stream_buffer * {aka struct stream_buffer *}’ but argument is of type ‘char *’
+ int stream_input_parse(stream_buffer *sb, char *path);
+     ^
+word_filter.c:42:9: error: too few arguments to function ‘stream_input_parse’
+   ret = stream_input_parse(path);
+         ^
+In file included from word_filter.c:2:0:
+stream_parse.h:102:5: note: declared here
+ int stream_input_parse(stream_buffer *sb, char *path);
+     ^
+word_filter.c:76:3: warning: implicit declaration of function ‘stream_buffer_destory’ [-Wimplicit-function-declaration]
    stream_buffer_destory   (sb);
    ^
-In file included from word_filter.c:5:0:
-word_filter.c: At top level:
-data_store.h:50:20: warning: ‘data_store_print_max_count’ used but never defined
- static inline void data_store_print_max_count(data_store_object *set);
+data_store_list_impl.c: In function ‘data_store_destroy’:
+data_store_list_impl.c:103:20: warning: dereferencing ‘void *’ pointer
+  for (node=ds->priv->head ; node ; node=node->next) 
                     ^
+data_store_list_impl.c:103:20: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c: In function ‘data_store_insert_count’:
+data_store_list_impl.c:124:11: error: ‘WF_WORD_INSERT_FAIL’ undeclared (first use in this function)
+    return WF_WORD_INSERT_FAIL;
+           ^
+data_store_list_impl.c:124:11: note: each undeclared identifier is reported only once for each function it appears in
+data_store_list_impl.c:126:15: warning: dereferencing ‘void *’ pointer
+   if (ds->priv->count ) {
+               ^
+data_store_list_impl.c:126:15: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c:129:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->head  = node;
+            ^
+data_store_list_impl.c:129:12: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c:130:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->tail  = node;
+            ^
+data_store_list_impl.c:130:12: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:131:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->count = 1;
+            ^
+data_store_list_impl.c:131:12: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c:134:30: warning: dereferencing ‘void *’ pointer
+    node->prev      = ds->priv->tail;
+                              ^
+data_store_list_impl.c:134:30: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:136:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->tail  = node;
+            ^
+data_store_list_impl.c:136:12: error: request for member ‘tail’ in something not a structure or union
+data_store_list_impl.c:137:12: warning: dereferencing ‘void *’ pointer
+    ds->priv->count = 1;
+            ^
+data_store_list_impl.c:137:12: error: request for member ‘count’ in something not a structure or union
+data_store_list_impl.c: At top level:
+data_store_list_impl.c:142:6: error: conflicting types for ‘data_store_get_max_count’
+ void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
+      ^
+In file included from data_store_list_impl.c:5:0:
+data_store.h:42:5: note: previous declaration of ‘data_store_get_max_count’ was here
+ int data_store_get_max_count(data_store *ds, data_store_object *set, int index);
+     ^
+data_store_list_impl.c: In function ‘data_store_get_max_count’:
+data_store_list_impl.c:144:44: warning: dereferencing ‘void *’ pointer
+  data_store_list_node *node_temp = ds->priv->head;
+                                            ^
+data_store_list_impl.c:144:44: error: request for member ‘head’ in something not a structure or union
+data_store_list_impl.c:153:11: error: incompatible types when assigning to type ‘data_store_object {aka struct <anonymous>}’ from type ‘void *’
+    set[i] = NULL;
+           ^
+data_store_list_impl.c: At top level:
+data_store_list_impl.c:157:6: error: conflicting types for ‘data_store_sort’
+ void data_store_sort(data_store *ds)
+      ^
+In file included from data_store_list_impl.c:5:0:
+data_store.h:47:6: note: previous declaration of ‘data_store_sort’ was here
+ int  data_store_sort(data_store *ds);
+      ^
+data_store_list_impl.c: In function ‘data_store_sort’:
+data_store_list_impl.c:161:22: warning: dereferencing ‘void *’ pointer
+  for (node_i=ds->priv->head ; node_i ; node_i=node_i->next)
+                      ^
+data_store_list_impl.c:161:22: error: request for member ‘head’ in something not a structure or union

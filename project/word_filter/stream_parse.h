@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define WF_SB_EMPTY  	 0
 #define WF_SB_NOTEMPTY 	 1
@@ -11,21 +12,23 @@
 #define WF_SB_FULL 		 1
 #define WF_SB_NOTFULL	 0
 
-#define WORD_GET__OK	 0 
+#define WORD_GET_OK	 0 
 #define WORD_INSERT_OK 	 0
-
-static inline int stream_buffer_is_empty(stream_buffer *sb);
 
 /*
  * 数据流缓冲区
  * 实现为一个环形队列
  */
-typedef struct {
+typedef struct stream_buffer {
 	uint32_t  capacity;
 	uint32_t  head;
 	uint32_t  tail;
 	char     *buf;
 } stream_buffer;
+
+static inline int stream_buffer_is_empty(stream_buffer *sb);
+
+static inline int stream_buffer_empty_size(stream_buffer *sb);
 
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
@@ -44,7 +47,7 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 	return sb;
 }
 
-void stream_buffer_destroy(stream_buffer *sb)
+static inline void stream_buffer_destroy(stream_buffer *sb)
 {
 	if(sb->buf)
 		free(sb->buf);
@@ -63,12 +66,14 @@ static inline int stream_buffer_insert_word(stream_buffer *sb,
 			sb->tail = (sb->tail+1)%sb->capacity;
 		}
 		sb->buf[sb->tail] = '\0';
-		return WF_INSERT_OK;
+		return WORD_INSERT_OK;
 	}
 }
 
-static int stream_buffer_get_word(stream_buffer *sb, char *word)
+static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
+	int i;
+
 	do {
 		word[i]  = sb->buf[sb->head];
 		sb->head = (sb->head+1)%sb->capacity;
@@ -79,9 +84,9 @@ static int stream_buffer_get_word(stream_buffer *sb, char *word)
 static inline int stream_buffer_is_empty(stream_buffer *sb)
 {
 	if(sb->tail == sb->head)
-		return WF_EMPTY;
+		return WF_SB_EMPTY;
 	else 
-		return WF_NOTEMPTY;
+		return WF_SB_NOTEMPTY;
 }
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
@@ -94,6 +99,6 @@ static inline int stream_buffer_empty_size(stream_buffer *sb)
  * 实现方式可以为从一个文件或者一个网络，读取相应内容
  * 考虑文本特殊情况包括：各种标点符号，字符大小写，换行，空行等的处理
  */
-char *stream_input_parse(char *path);
+int stream_input_parse(stream_buffer *sb, char *path);
 
 #endif

@@ -2,6 +2,8 @@
 #define _DATA_STORE_H_
 
 #include <stdint.h>
+#include <stdio.h>
+
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
  * 0x01指的是2位16进制数，转换成正数是1

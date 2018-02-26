@@ -1,4 +1,4 @@
-#include <errno_check.h>
+#include "error_check.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -80,18 +80,18 @@ data_store *data_store_create(void)
 	data_store      *ds      = NULL;
 	data_store_list *ds_list = NULL;
 
-	ds_list = malloc(sizeof(data_store_list));
+	ds_list = (data_store_list *)malloc(sizeof(data_store_list));
 	if (!ds_list)
 		return NULL;
 
-	ds = malloc(sizeof(data_store));
+	ds = (data_store *)malloc(sizeof(data_store));
 	if (!ds) {
 		free(ds_list);
 		return NULL;
 	}
 
 	ds->type = DATA_STORE_TYPE_LIST;
-	(data_store_list *)ds->priv = ds_list;
+	ds->priv = ds_list;
 
 	return ds;
 }
