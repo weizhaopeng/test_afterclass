@@ -4,7 +4,7 @@
 #define WORD_SIZE 20
 
 static inline int stream_buffer_fp_skip_space(FILE *fp);
-/*return ENOENT, ENOMEM, WF_SB_FULL, 0*/
+
 int stream_input_parse(stream_buffer *sb, char *path)
 {
 	FILE	  *fp;
@@ -26,8 +26,13 @@ int stream_input_parse(stream_buffer *sb, char *path)
 	while (1) {
 		do {
 			char_temp = fgetc(fp);
-			if (char_temp>='A' && char_temp<='z' || char_temp>='a' && char_temp<='z')
+			if (char_temp>='A' && char_temp<='Z' || 
+				char_temp>='a' && char_temp<='z')
+			{
+				if (char_temp >= 'A' && char_temp <= 'Z')
+					char_temp = char_temp+32;
 				word[posi++] = char_temp;
+			}
 			else {
 				ret = stream_buffer_fp_skip_space(fp);
     			if (ret == 0) {

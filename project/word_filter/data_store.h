@@ -4,6 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define WF_WORD_INSERT_FAIL  1
+#define WF_NOT_ENOUGH		 1
+#define WF_DATA_STORE_EMPTY  1
+#define WF_OBJ_ARRAY_EMPTY   1
+
+#define WF_WORD_PRINT_NUMBER 10
+
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
  * 0x01指的是2位16进制数，转换成正数是1
@@ -49,6 +56,6 @@ int  data_store_sort(data_store *ds);
 /*
  *数据对象打印
  */
-void data_store_print_max_count(data_store_object *set);
+int data_store_print_max_count(data_store_object *set);
 	
 #endif

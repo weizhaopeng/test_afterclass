@@ -48,7 +48,7 @@ static data_store_list_node *node_insert(char *word)
 	return node_insert;
 }
 
-static void node_free(data_store_list_node *node)
+static inline void node_free(data_store_list_node *node)
 {
 	if (node->obj->word)
 		free(node->obj->word);
@@ -58,7 +58,7 @@ static void node_free(data_store_list_node *node)
 		free(node);
 }
 
-static void node_count_inc(data_store_list_node *node)
+static inline void node_count_inc(data_store_list_node *node)
 {
 	node->obj->count++;
 }
@@ -99,12 +99,14 @@ data_store *data_store_create(void)
 void data_store_destroy(data_store *ds)
 {
 	data_store_list_node *node;
+	data_store_list		 *ds_list;
 
-	for (node=ds->priv->head ; node ; node=node->next) 
+	ds_list = (data_store_list *)ds->priv;
+	for (node=ds_list->head ; node ; node=node->next) 
 		if (node)
 			node_free(node);
-	if (ds->priv)
-		free(ds->priv);
+	if (ds_list)
+		free(ds_list);
 	if (ds)
 		free(ds);
 }
@@ -112,8 +114,10 @@ void data_store_destroy(data_store *ds)
 int data_store_insert_count(data_store *ds, char *word)
 {
 	data_store_list_node *node = NULL;
+	data_store_list 	 *ds_list;
 
-	node = node_find(ds->priv,word);
+	ds_list = (data_store_list *)ds->priv;
+	node = node_find(ds_list, word);
 	if (node) {
 		node_count_inc(node);
 		return 0;
@@ -123,56 +127,73 @@ int data_store_insert_count(data_store *ds, char *word)
 		if (!node)
 			return WF_WORD_INSERT_FAIL;
 
-		if (ds->priv->count ) {
-			node->prev 		= NULL;
-			node->next 		= NULL;
-			ds->priv->head  = node;
-			ds->priv->tail  = node;
-			ds->priv->count = 1;
+		if (ds_list->count ) {
+			node->prev 	   = NULL;
+			node->next	   = NULL;
+			ds_list->head  = node;
+			ds_list->tail  = node;
+			ds_list->count = 1;
 		}
 		else {
-			node->prev 	    = ds->priv->tail;
-			node->next 	    = NULL;
-			ds->priv->tail  = node;
-			ds->priv->count = 1;
+			node->prev 	   = ds_list->tail;
+			node->next 	   = NULL;
+			ds_list->tail  = node;
+			ds_list->count = 1;
 		}
 	}
 }
 
-void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
+int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
-	data_store_list_node *node_temp = ds->priv->head;
+	data_store_list_node *node_temp;
+	data_store_list		 *ds_list;
+	int					  ret = 0;
 
-	for (int i=0 ; i<index ; i++) {
+	ds_list   = (data_store_list *)ds->priv;
+	node_temp = ds_list->head;
+	for (int i = 0 ; i < index; i++) {
 		if (node_temp) {
 			set[i].word  = node_temp->obj->word;
 			set[i].count = node_temp->obj->count;
 			node_temp 	 = node_temp->next;
 		}
-		else 
-			set[i] = NULL;
+		else {
+			ret = WF_NOT_ENOUGH;
+			set[i].word  = NULL;
+			set[i].count - -1;
+		}
 	}
+	return ret;
 }
 
-void data_store_sort(data_store *ds)
+int data_store_sort(data_store *ds)
 {
 	data_store_list_node *node_i, *node_j;
+	data_store_list		 *ds_list;
 
-	for (node_i=ds->priv->head ; node_i ; node_i=node_i->next)
+	ds_list = (data_store_list *)ds->priv;
+	if (!ds_list)
+		return WF_DATA_STORE_EMPTY;
+
+	for (node_i=ds_list->head ; node_i ; node_i=node_i->next)
 		for (node_j=node_i->next ; node_j ; node_j=node_j->next)
 		{
 			if (node_j->obj->count > node_j->obj->count)
 				node_exchange(node_i, node_j);
 		}
+	return 0;
 }
 
-void data_store_print_max_count(data_store_object *set)
+int data_store_print_max_count(data_store_object *set)
 {
+	if (!set)
+		return WF_OBJ_ARRAY_EMPTY;
 	system("clear");
 	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
 	for (int i=0 ; i<10 ; i++)
 		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
 	printf("\n");
+	return 0;
 }
 

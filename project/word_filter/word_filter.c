@@ -6,6 +6,7 @@
 #define WF_WORD_INSERT_FAIL 1
 
 static inline void stream_buffer_destroy(stream_buffer *sb);
+int stream_input_parse(stream_buffer *sb, char *path);
 
 int main(int argc, char **argv)
 {
@@ -29,26 +30,26 @@ int main(int argc, char **argv)
 	
 		ds  = data_store_create();
 		if (!ds) {
-			puts("memory error!");
+			puts("memory error!\n");
 			continue;
 		}
 
-		set = (data_store_object *)malloc(sizeof(data_store_object)*10);
+		set = (data_store_object *)malloc(sizeof(data_store_object)*WF_WORD_PRINT_NUMBER);
 		if (!set) {
-			puts("memory error!");
+			puts("memory error!\n");
 			return 1;
 		}
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
-		ret = stream_input_parse(path);
+		ret = stream_input_parse(sb, path);
 		if (ret == ENOENT) {
-			puts("no such file");
+			puts("no such file\n");
 			continue;
 		}
 		if (ret == ENOMEM) {
-			puts("memory error");
+			puts("memory error\n");
 			continue;
 		if (ret == WF_SB_FULL) {
-			puts("stream_buffer full");
+			puts("stream_buffer full\n");
 			continue;
 		}
 		}
@@ -62,19 +63,23 @@ int main(int argc, char **argv)
 
 			ret =data_store_insert_count(ds, word);
 			if (ret == WF_WORD_INSERT_FAIL) {
-				puts("word insert failed");
+				puts("word insert failed\n");
 				continue;
 			}
 		}
 	//step5: 对data store进行排序，然后获取个数最多的10个word，打印
-		data_store_sort(ds);
+		ret = data_store_sort(ds);
+		if (ret)
+			puts("data store is empty\n");
 			
-		data_store_get_max_count(ds, set, 10);
+		ret = data_store_get_max_count(ds, set, WF_WORD_PRINT_NUMBER);
+		if (ret)
+			print("words type is less than experted\n");
 			
 		data_store_print_max_count(set);
 
 		stream_buffer_destory	  (sb);
-		
+			
 		data_store_destroy		  (ds);
 		return 0;
 	}
