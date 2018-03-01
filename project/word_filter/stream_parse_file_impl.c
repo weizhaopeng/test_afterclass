@@ -1,7 +1,4 @@
 #include "stream_parse.h"
-#include "error_check.h"
-
-#define WORD_SIZE 20
 
 static inline int stream_buffer_fp_skip_space(FILE *fp);
 

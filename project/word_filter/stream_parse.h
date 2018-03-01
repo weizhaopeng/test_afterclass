@@ -5,16 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "error_check.h"
 
-#define WF_SB_EMPTY  	 0
-#define WF_SB_NOTEMPTY 	 1
+#define WF_SB_EMPTY  	 0x00
+#define WF_SB_NOTEMPTY 	 0x01
 
-#define WF_SB_FULL 		 1
-#define WF_SB_NOTFULL	 0
+#define WF_SB_FULL 		 0x01
+#define WF_SB_NOTFULL	 0x00
 
-#define WORD_GET_OK	 0 
-#define WORD_INSERT_OK 	 0
+#define WORD_GET_OK	 	 0x00 
+#define WORD_INSERT_OK 	 0x00
 
+#define WORD_SIZE 		 0x14
+
+#define WF_SB_CAPACITY   1024
 /*
  * 数据流缓冲区
  * 实现为一个环形队列

@@ -1,15 +1,17 @@
 #ifndef _DATA_STORE_H_
 #define _DATA_STORE_H_
 
+#include "error_check.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
-#define WF_WORD_INSERT_FAIL  1
-#define WF_NOT_ENOUGH		 1
-#define WF_DATA_STORE_EMPTY  1
-#define WF_OBJ_ARRAY_EMPTY   1
+#define WF_WORD_INSERT_FAIL  0x01
+#define WF_DATA_STORE_EMPTY  0x01
+#define WF_OBJ_ARRAY_EMPTY   0x01
 
-#define WF_WORD_PRINT_NUMBER 10
+#define WF_WORD_PRINT_NUMBER 0x0A
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
@@ -45,8 +47,8 @@ void        data_store_destroy(data_store *ds);
 /*
  * 数据的插入和按序查询
  */
-int data_store_insert_count(data_store *ds, char *word);
-int data_store_get_max_count(data_store *ds, data_store_object *set, int index);
+int  data_store_insert_count(data_store *ds, char *word);
+void data_store_get_max_count(data_store *ds, data_store_object *set, int index);
 
 /*
  * 数据手动排序，按count的大小顺序
@@ -56,6 +58,6 @@ int  data_store_sort(data_store *ds);
 /*
  *数据对象打印
  */
-int data_store_print_max_count(data_store_object *set);
+void data_store_print_max_count(data_store_object *set, char *peth);
 	
 #endif

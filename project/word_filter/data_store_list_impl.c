@@ -1,7 +1,3 @@
-#include "error_check.h"
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "data_store.h"
 
 /*
@@ -143,11 +139,10 @@ int data_store_insert_count(data_store *ds, char *word)
 	}
 }
 
-int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
+void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 {
 	data_store_list_node *node_temp;
 	data_store_list		 *ds_list;
-	int					  ret = 0;
 
 	ds_list   = (data_store_list *)ds->priv;
 	node_temp = ds_list->head;
@@ -158,12 +153,10 @@ int data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 			node_temp 	 = node_temp->next;
 		}
 		else {
-			ret = WF_NOT_ENOUGH;
 			set[i].word  = NULL;
 			set[i].count - -1;
 		}
 	}
-	return ret;
 }
 
 int data_store_sort(data_store *ds)
@@ -184,16 +177,14 @@ int data_store_sort(data_store *ds)
 	return 0;
 }
 
-int data_store_print_max_count(data_store_object *set)
+void data_store_print_max_count(data_store_object *set, char *path)
 {
-	if (!set)
-		return WF_OBJ_ARRAY_EMPTY;
 	system("clear");
-	printf("\033[40;32m******当前文档中单词数前十的单词统计******\n\033[0m");
+	printf("\033[40;32m******当前文档%s中单词数前十的单词统计******\n\033[0m",path);
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
 	for (int i=0 ; i<10 ; i++)
 		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
 	printf("\n");
-	return 0;
+	return;
 }
 

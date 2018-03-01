@@ -1,11 +1,7 @@
 #include "data_store.h"
 #include "stream_parse.h"
-#include "error_check.h"
 
-#define CAPACITY 			1024
-#define WF_WORD_INSERT_FAIL 1
 
-static inline void stream_buffer_destroy(stream_buffer *sb);
 int stream_input_parse(stream_buffer *sb, char *path);
 
 int main(int argc, char **argv)
@@ -22,7 +18,7 @@ int main(int argc, char **argv)
 		data_store	  	  *ds;
 		data_store_object *set;
 
-		sb  = stream_buffer_create(CAPACITY);
+		sb  = stream_buffer_create(WF_SB_CAPACITY);
 		if (!sb) {
 			puts("memory error!");
 			continue;
@@ -72,13 +68,11 @@ int main(int argc, char **argv)
 		if (ret)
 			puts("data store is empty\n");
 			
-		ret = data_store_get_max_count(ds, set, WF_WORD_PRINT_NUMBER);
-		if (ret)
-			print("words type is less than experted\n");
+		data_store_get_max_count(ds, set, WF_WORD_PRINT_NUMBER);
 			
-		data_store_print_max_count(set);
+		data_store_print_max_count(set, path);
 
-		stream_buffer_destory	  (sb);
+		stream_buffer_destroy	  (sb);
 			
 		data_store_destroy		  (ds);
 		return 0;
