@@ -66,9 +66,10 @@ static inline int stream_buffer_insert_word(stream_buffer *sb,
 		return WF_SB_FULL;
 	else {
 		for(int i = 0; i < len; i++) {
-			sb->buf[sb->tail] = word[i];
 			sb->tail = (sb->tail+1)%sb->capacity;
+			sb->buf[sb->tail] = word[i];
 		}
+		sb->tail = (sb->tail+1)%sb->capacity;
 		sb->buf[sb->tail] = '\0';
 		return WORD_INSERT_OK;
 	}
@@ -95,8 +96,8 @@ static inline int stream_buffer_is_empty(stream_buffer *sb)
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
-	return ((sb->tail - sb->head + sb->capacity) % sb->capacity);
-}
+	return (sb->capacity-(sb->tail - sb->head + sb->capacity) % sb->capacity-;
+
 
 /*
  * 数据输入
