@@ -14,11 +14,12 @@
 #define WF_SB_NOTFULL	 0x00
 
 #define WORD_GET_OK	 	 0x00 
+#define WORD_GET_FAIL	 0X01
 #define WORD_INSERT_OK 	 0x00
 
 #define WORD_SIZE 		 0x14
 
-#define WF_SB_CAPACITY   1024
+#define WF_SB_CAPACITY   (1024*30)
 /*
  * 数据流缓冲区
  * 实现为一个环形队列
@@ -77,13 +78,19 @@ static inline int stream_buffer_insert_word(stream_buffer *sb,
 
 static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
-	int i;
+	int i = 0;
 
-	do {
-		word[i]  = sb->buf[sb->head];
-		sb->head = (sb->head+1)%sb->capacity;
-	} while (word[i] != '\0');
+	while (sb->buf[sb->head] != '\0') {
+		word[i++] = sb->buf[sb->head];
+		sb->head  = (sb->head+1)%sb->capacity;
+	}
+	sb->head  = (sb->head+1)%sb->capacity;
+	word[i] = '\0';
+	
+	if (word[0] == '\0')
+		return WORD_GET_FAIL;
 	return WORD_GET_OK;
+
 }
 
 static inline int stream_buffer_is_empty(stream_buffer *sb)
@@ -96,8 +103,8 @@ static inline int stream_buffer_is_empty(stream_buffer *sb)
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
-	return (sb->capacity-(sb->tail - sb->head + sb->capacity) % sb->capacity-;
-
+	return (sb->capacity-(sb->tail - sb->head + sb->capacity) % sb->capacity-1);
+}
 
 /*
  * 数据输入

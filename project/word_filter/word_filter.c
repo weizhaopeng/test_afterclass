@@ -35,6 +35,12 @@ int main(int argc, char **argv)
 			puts("memory error!\n");
 			return 1;
 		}
+
+		word = (char *)malloc(sizeof(char)*WORD_SIZE);
+		if (!word) {
+			puts("memory error!\n");
+			return 1;
+		}
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
 		ret = stream_input_parse(sb, path);
 		if (ret == ENOENT) {
@@ -44,10 +50,10 @@ int main(int argc, char **argv)
 		if (ret == ENOMEM) {
 			puts("memory error\n");
 			continue;
+		}
 		if (ret == WF_SB_FULL) {
 			puts("stream_buffer full\n");
 			continue;
-		}
 		}
 	//step4: 依次将stream buffer中的word存进data store中
 		while (1)
@@ -55,7 +61,9 @@ int main(int argc, char **argv)
 			if(!stream_buffer_is_empty(sb))
 				break;
 
-			stream_buffer_get_word(sb, word);
+			ret = stream_buffer_get_word(sb, word);
+			if (ret == WORD_GET_FAIL)
+				continue;
 
 			ret =data_store_insert_count(ds, word);
 			if (ret == WF_WORD_INSERT_FAIL) {
@@ -67,7 +75,7 @@ int main(int argc, char **argv)
 		ret = data_store_sort(ds);
 		if (ret)
 			puts("data store is empty\n");
-			
+		
 		data_store_get_max_count(ds, set, WF_WORD_PRINT_NUMBER);
 			
 		data_store_print_max_count(set, path);
@@ -75,7 +83,7 @@ int main(int argc, char **argv)
 		stream_buffer_destroy	  (sb);
 			
 		data_store_destroy		  (ds);
-		return 0;
 	}
+	return 0;
 	//备注：有空可以考虑一下，为什么对数据进行多份存储，以及为什么对框架进行这种划分？
 }
