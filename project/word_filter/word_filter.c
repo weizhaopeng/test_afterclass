@@ -58,16 +58,13 @@ int main(int argc, char **argv)
 	//step4: 依次将stream buffer中的word存进data store中
 		while (1)
 		{
-			if(!stream_buffer_is_empty(sb))
-				break;
-
 			ret = stream_buffer_get_word(sb, word);
 			if (ret == WORD_GET_FAIL)
-				continue;
+				break;
 
 			ret =data_store_insert_count(ds, word);
 			if (ret == WF_WORD_INSERT_FAIL) {
-				puts("word insert failed\n");
+				printf("word:%s insert failed\n",word);
 				continue;
 			}
 		}

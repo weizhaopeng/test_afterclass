@@ -67,8 +67,8 @@ static inline int stream_buffer_insert_word(stream_buffer *sb,
 		return WF_SB_FULL;
 	else {
 		for(int i = 0; i < len; i++) {
-			sb->tail = (sb->tail+1)%sb->capacity;
 			sb->buf[sb->tail] = word[i];
+			sb->tail = (sb->tail+1)%sb->capacity;
 		}
 		sb->tail = (sb->tail+1)%sb->capacity;
 		sb->buf[sb->tail] = '\0';
@@ -80,17 +80,22 @@ static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
 	int i = 0;
 
-	while (sb->buf[sb->head] != '\0') {
-		word[i++] = sb->buf[sb->head];
+	while (sb->buf[sb->head] == '\0' && sb->head != sb->tail)
+			sb->head  = (sb->head+1)%sb->capacity;
+		
+	while(sb->buf[sb->head] != '\0' && sb->head != sb->tail) {
+		if (sb->head == sb->tail)
+			break;
+
+		word[i++]   = sb->buf[sb->head];
 		sb->head  = (sb->head+1)%sb->capacity;
 	}
-	sb->head  = (sb->head+1)%sb->capacity;
 	word[i] = '\0';
-	
-	if (word[0] == '\0')
-		return WORD_GET_FAIL;
-	return WORD_GET_OK;
 
+	if (sb->head == sb->tail)
+		return WORD_GET_FAIL;
+
+	return WORD_GET_OK;
 }
 
 static inline int stream_buffer_is_empty(stream_buffer *sb)
