@@ -151,13 +151,13 @@ void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 	node_temp = ds_list->head->next;
 	for (int i = 0; i < index; i++) {
 		if (node_temp) {
-			set[i].word  = node_temp->obj->word;
+			strcpy(set[i].word, node_temp->obj->word);
 			set[i].count = node_temp->obj->count;
 			node_temp 	 = node_temp->next;
 		}
 		else {
-			set[i].word  = NULL;
-			set[i].count - -1;
+			set[i].word  = '\0';
+			set[i].count = -1;
 		}
 	}
 }
@@ -180,7 +180,7 @@ int data_store_sort(data_store *ds)
 	return 0;
 }
 
-void data_store_print_max_count(data_store_object *set, char *path)
+static void data_store_print_max_count(data_store_object *set, char *path)
 {
 	printf("\033[40;32m******当前文档%s中单词数前十的单词统计******\n\033[0m",path);
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
@@ -190,3 +190,19 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
+data_store_object *data_store_object_array_creat(uint32_t object_number,
+							uint32_t word_size)
+{
+	data_store_object *set;
+
+	set = (data_store_object *)malloc(sizeof(data_store_object)*index);
+	if (!set)
+		return NULL;
+	for (int i = 0; i < object_number; i++) {
+		set[i].word = (char *)malloc(sizeof(char)*word_size);
+		if (!set[i].word)
+			return NULL;
+	}
+	return set;
+}
+	
