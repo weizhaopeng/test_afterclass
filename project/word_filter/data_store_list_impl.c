@@ -21,7 +21,7 @@ static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 	data_store_list_node *node_temp;
 
 	for (node_temp = ds_list->head->next; node_temp; node_temp = node_temp->next)
-		if (strcmp(word, node_temp->obj->word) != 0)
+		if (!strcmp(word, node_temp->obj->word))
 			return node_temp;
 
 	return NULL;
@@ -30,6 +30,7 @@ static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 static data_store_list_node *node_insert(char *word)
 {
 	data_store_list_node *node_insert;
+	char *word_insert;
 
 	node_insert = (data_store_list_node *)malloc(sizeof(data_store_list_node));
 	if (!node_insert) 
@@ -38,8 +39,13 @@ static data_store_list_node *node_insert(char *word)
 	node_insert->obj = (data_store_object *)malloc(sizeof(data_store_object));
 	if (!node_insert->obj) 
 		return NULL;
+	
+	word_insert = (char *)malloc(sizeof(char)*(strlen(word)+1));
+	if (!word_insert)
+		return NULL;
+	strcpy(word_insert, word);
 
-	node_insert->obj->word  = word;
+	node_insert->obj->word  = word_insert;
 	node_insert->obj->count = 1;
 	return node_insert;
 }
@@ -88,7 +94,7 @@ data_store *data_store_create(void)
 	ds_list->head 	= ds_list->tail   = head_node;
 	ds_list->count  = 0;
 	head_node->prev = head_node->next = NULL;
-	head_node->obj 	= NULL;
+	head_node->obj  = NULL;
 
 	ds = (data_store *)malloc(sizeof(data_store));
 	if (!ds) {
@@ -108,9 +114,12 @@ void data_store_destroy(data_store *ds)
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
-	for (node=ds_list->head->next; node; node=node->next) 
+	for (node = ds_list->head->next; node; node = node->next) { 
+		if (node->obj->word)
+			free(node->obj->word);
 		if (node)
 			node_free(node);
+	}
 	if (ds_list->head)
 		free(ds_list->head);
 	if (ds_list)
@@ -135,10 +144,11 @@ int data_store_insert_count(data_store *ds, char *word)
 		if (!node)
 			return WF_WORD_INSERT_FAIL;
 
-		node->prev 	   = ds_list->tail;
-		node->next	   = NULL;
-		ds_list->tail  = node;
-		ds_list->count ++;
+		node->prev 	  		= ds_list->tail;
+		ds_list->tail->next = node;
+		node->next	  		= NULL;
+		ds_list->tail 		= node;
+		ds_list->count		++;
 	}
 }
 
@@ -157,7 +167,7 @@ void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 			node_temp 	 = node_temp->next;
 		}
 		else {
-			set[i].word  = "noword";
+			set[i].word  = NULL;
 			set[i].count = -1;
 		}
 	}
@@ -199,21 +209,17 @@ data_store_object *data_store_object_array_creat(uint32_t object_number,
 	set = (data_store_object *)malloc(sizeof(data_store_object)*object_number);
 	if (!set)
 		return NULL;
-	for (int i = 0; i < object_number; i++) {
+	/*for (int i = 0; i < object_number; i++) {
 		set[i].word = (char *)malloc(sizeof(char)*word_size);
 		if (!set[i].word)
 			return NULL;
-	}
+	}*/
 	return set;
 }
 	
 void data_store_object_array_destroy(data_store_object *set, uint32_t object_number)
 {
-	for (int i = 0; i < object_number; i++)
-		if (set[i].word)
-			free(set[i].word);
 	free(set);
-	return;
 }
 	
 	
