@@ -30,7 +30,7 @@ int main(int argc, char **argv)
 			continue;
 		}
 
-		set = (data_store_object *)malloc(sizeof(data_store_object)*WF_WORD_PRINT_NUMBER);
+		set = data_store_object_array_creat(WF_WORD_PRINT_NUMBER, WORD_SIZE);
 		if (!set) {
 			puts("memory error!\n");
 			return 1;
@@ -41,6 +41,7 @@ int main(int argc, char **argv)
 			puts("memory error!\n");
 			return 1;
 		}
+		char *word_cpy = word;
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
 		ret = stream_input_parse(sb, path);
 		if (ret == ENOENT) {
@@ -77,6 +78,7 @@ int main(int argc, char **argv)
 			
 		data_store_print_max_count(set, path);
 
+		data_store_object_array_destroy(set, WF_WORD_PRINT_NUMBER);
 		stream_buffer_destroy	  (sb);
 			
 		data_store_destroy		  (ds);

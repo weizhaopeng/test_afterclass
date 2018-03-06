@@ -11,7 +11,7 @@
 #define WF_DATA_STORE_EMPTY  0x01
 #define WF_OBJ_ARRAY_EMPTY   0x01
 
-#define WF_WORD_PRINT_NUMBER 0x0A
+#define WF_WORD_PRINT_NUMBER 10
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
@@ -60,4 +60,11 @@ int  data_store_sort(data_store *ds);
  */
 void data_store_print_max_count(data_store_object *set, char *peth);
 	
+/*
+ *数据存储对象数组的创建和销毁
+ */
+void data_store_object_array_destroy(data_store_object *set, uint32_t object_number);
+data_store_object *data_store_object_array_creat(uint32_t object_number,
+							uint32_t word_size);
+
 #endif
