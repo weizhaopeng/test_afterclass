@@ -69,23 +69,17 @@ static inline void node_count_inc(data_store_list_node *node)
 
 static inline void node_exchange(data_store_list_node *node1, data_store_list_node *node2)
 {
-	data_store_list_node *node_temp;
+	char *word_temp;
+	int	  count_temp;
 
-	node_temp   = node1->next;
-	node1->next = node2->next;
-	node2->next = node_temp;
-	if (node_temp)
-		node_temp->prev   = node2;
-	if (node1->next)
-		node1->next->prev = node1;
+	word_temp 		  = node1->obj->word;
+	node1->obj->word  = node2->obj->word;
+	node2->obj->word  = word_temp;
 
-	node_temp   	  = node1->prev;
-	node1->prev 	  = node2->prev;
-	node2->prev 	  = node_temp;
-	if (node_temp)
-		node_temp->next   = node2;
-	if (node1->prev)
-		node1->prev->next = node1;
+	count_temp 		  = node1->obj->count;
+	node1->obj->count = node2->obj->count;
+	node2->obj->count = count_temp;
+
 }
 
 data_store *data_store_create(void)
@@ -185,15 +179,16 @@ int data_store_sort(data_store *ds)
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
-	if (!ds_list->count)
+	if (ds_list->count == 0)
 		return WF_DATA_STORE_EMPTY;
 
-	for (node_i = ds_list->head->next; node_i; node_i = node_i->next)
+	for (node_i = ds_list->head->next; node_i; node_i = node_i->next) {
 		for (node_j = node_i->next; node_j; node_j = node_j->next)
 		{
 			if (node_j->obj->count > node_i->obj->count)
 				node_exchange(node_i, node_j);
 		}
+	}
 	return 0;
 }
 
