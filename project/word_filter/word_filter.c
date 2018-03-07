@@ -8,15 +8,15 @@ int main(int argc, char **argv)
 {
 	//step1: 解析参数，参数应该包括需要读取的文件名或者一个网络地址
 	char  *path, *word;
-	size_t len;
-	int    ret;
+	int    len, ret;
+	//step2: 对象初始化，初始化stream buffer和data store
+	stream_buffer 	  *sb;
+	data_store	  	  *ds;
+	data_store_object *set;
+
 	for (int i=1 ; i<argc ; i++)
 	{
 		path = argv[i];
-	//step2: 对象初始化，初始化stream buffer和data store
-		stream_buffer 	  *sb;
-		data_store	  	  *ds;
-		data_store_object *set;
 
 		sb  = stream_buffer_create(WF_SB_CAPACITY);
 		if (!sb) {
@@ -41,7 +41,6 @@ int main(int argc, char **argv)
 			puts("memory error!\n");
 			return 1;
 		}
-		char *word_cpy = word;
 	//step3: stream input流程处理，包括将处理好的word存进stream buffer
 		ret = stream_input_parse(sb, path);
 		if (ret == ENOMEM) {
@@ -77,7 +76,9 @@ int main(int argc, char **argv)
 		data_store_object_array_destroy(set, WF_WORD_PRINT_NUMBER);
 		stream_buffer_destroy	  	   (sb);
 		data_store_destroy		  	   (ds);
+		free(word);
 	}
 	return 0;
 	//备注：有空可以考虑一下，为什么对数据进行多份存储，以及为什么对框架进行这种划分？
+	/*多份存储便于根据数据类型选择执行效率更高的存储方式，这样的框架划分，将程序处理过程模块化，便于编程和排错*/
 }
