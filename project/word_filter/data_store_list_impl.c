@@ -197,7 +197,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	system("clear");
 	printf("\033[40;32m******当前文档%s中单词数前十的单词统计******\n\033[0m",path);
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
-	for (int i=0; i<10; i++)
+	for (int i = 0; i < 10 && set[i].word; i++)
 		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
 	printf("\n");
 	printf("\033[47;30m点击回车继续\033[0m\n");
