@@ -52,12 +52,14 @@ static data_store_list_node *node_insert(char *word)
 
 static inline void node_free(data_store_list_node *node)
 {
-	if (node->obj->word)
-		free(node->obj->word);
-	if (node->obj)
-		free(node->obj);
-	if (node)
+	if (node) {
+		if(node->obj) {
+			if(node->obj->word)
+				free(node->obj->word);
+			free(node->obj);
+		}
 		free(node);
+	}
 }
 
 static inline void node_count_inc(data_store_list_node *node)
@@ -72,9 +74,18 @@ static inline void node_exchange(data_store_list_node *node1, data_store_list_no
 	node_temp   = node1->next;
 	node1->next = node2->next;
 	node2->next = node_temp;
-	node_temp   = node1->prev;
-	node1->prev = node2->prev;
-	node2->prev = node_temp;
+	if (node_temp)
+		node_temp->prev   = node2;
+	if (node1->next)
+		node1->next->prev = node1;
+
+	node_temp   	  = node1->prev;
+	node1->prev 	  = node2->prev;
+	node2->prev 	  = node_temp;
+	if (node_temp)
+		node_temp->next   = node2;
+	if (node1->prev)
+		node1->prev->next = node1;
 }
 
 data_store *data_store_create(void)
@@ -110,18 +121,14 @@ data_store *data_store_create(void)
 
 void data_store_destroy(data_store *ds)
 {
-	data_store_list_node *node;
+	data_store_list_node *node_temp;
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
-	for (node = ds_list->head->next; node; node = node->next) { 
-		if (node->obj->word)
-			free(node->obj->word);
-		if (node)
-			node_free(node);
+	for (node_temp = ds_list->tail; ds_list->tail; ds_list->tail = node_temp) { 
+		node_free(ds_list->tail);
+		node_temp = node_temp->prev;
 	}
-	if (ds_list->head)
-		free(ds_list->head);
 	if (ds_list)
 		free(ds_list);
 	if (ds)
@@ -162,7 +169,6 @@ void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 	for (int i = 0; i < index; i++) {
 		if (node_temp != NULL) {
 			set[i].word  = node_temp->obj->word;
-			//strcpy(set[i].word, node_temp->obj->word);
 			set[i].count = node_temp->obj->count;
 			node_temp 	 = node_temp->next;
 		}
@@ -182,10 +188,10 @@ int data_store_sort(data_store *ds)
 	if (!ds_list->count)
 		return WF_DATA_STORE_EMPTY;
 
-	for (node_i = ds_list->head->next; node_i; node_i=node_i->next)
-		for (node_j=node_i->next; node_j; node_j=node_j->next)
+	for (node_i = ds_list->head->next; node_i; node_i = node_i->next)
+		for (node_j = node_i->next; node_j; node_j = node_j->next)
 		{
-			if (node_j->obj->count > node_j->obj->count)
+			if (node_j->obj->count > node_i->obj->count)
 				node_exchange(node_i, node_j);
 		}
 	return 0;
@@ -193,11 +199,14 @@ int data_store_sort(data_store *ds)
 
 void data_store_print_max_count(data_store_object *set, char *path)
 {
+	system("clear");
 	printf("\033[40;32m******当前文档%s中单词数前十的单词统计******\n\033[0m",path);
 	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
 	for (int i=0; i<10; i++)
 		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
 	printf("\n");
+	printf("\033[47;30m点击回车继续\033[0m\n");
+	getchar();
 	return;
 }
 
@@ -209,11 +218,6 @@ data_store_object *data_store_object_array_creat(uint32_t object_number,
 	set = (data_store_object *)malloc(sizeof(data_store_object)*object_number);
 	if (!set)
 		return NULL;
-	/*for (int i = 0; i < object_number; i++) {
-		set[i].word = (char *)malloc(sizeof(char)*word_size);
-		if (!set[i].word)
-			return NULL;
-	}*/
 	return set;
 }
 	
