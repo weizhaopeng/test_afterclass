@@ -39,11 +39,11 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
 	stream_buffer *sb; 
 
-	sb = (stream_buffer *)malloc(sizeof(stream_buffer));
+	sb = (stream_buffer *)calloc(1, sizeof(stream_buffer));
 	if (!sb)
 		return NULL;
 
-	sb->buf	= (char *)malloc(sizeof(char)*capacity);
+	sb->buf	= (char *)calloc(1, sizeof(char)*capacity);
 	if (!sb->buf)
 		return NULL;
 

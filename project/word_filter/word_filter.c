@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		word = (char *)malloc(sizeof(char)*WORD_SIZE);
+		word = (char *)calloc(1, sizeof(char)*WORD_SIZE);
 		if (!word) {
 			puts("memory error!\n");
 			return 1;

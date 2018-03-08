@@ -32,15 +32,15 @@ static data_store_list_node *node_insert(char *word)
 	data_store_list_node *node_insert;
 	char *word_insert;
 
-	node_insert = (data_store_list_node *)malloc(sizeof(data_store_list_node));
+	node_insert = (data_store_list_node *)calloc(1, sizeof(data_store_list_node));
 	if (!node_insert) 
 		return NULL;
 
-	node_insert->obj = (data_store_object *)malloc(sizeof(data_store_object));
+	node_insert->obj = (data_store_object *)calloc(1, sizeof(data_store_object));
 	if (!node_insert->obj) 
 		return NULL;
 	
-	word_insert = (char *)malloc(sizeof(char)*(strlen(word)+1));
+	word_insert = (char *)calloc(1, sizeof(char)*(strlen(word)+1));
 	if (!word_insert)
 		return NULL;
 	strcpy(word_insert, word);
@@ -88,11 +88,11 @@ data_store *data_store_create(void)
 	data_store_list 	 *ds_list 	= NULL;
 	data_store_list_node *head_node = NULL;
 
-	ds_list = (data_store_list *)malloc(sizeof(data_store_list));
+	ds_list = (data_store_list *)calloc(1, sizeof(data_store_list));
 	if (!ds_list)
 		return NULL;
 	
-	head_node = (data_store_list_node *)malloc(sizeof(data_store_list_node));
+	head_node = (data_store_list_node *)calloc(1,sizeof(data_store_list_node));
 	if(!head_node)
 		return NULL;
 
@@ -101,7 +101,7 @@ data_store *data_store_create(void)
 	head_node->prev = head_node->next = NULL;
 	head_node->obj  = NULL;
 
-	ds = (data_store *)malloc(sizeof(data_store));
+	ds = (data_store *)calloc(1, sizeof(data_store));
 	if (!ds) {
 		free(ds_list);
 		return NULL;
@@ -196,9 +196,9 @@ void data_store_print_max_count(data_store_object *set, char *path)
 {
 	system("clear");
 	printf("\033[40;32m******当前文档%s中单词数前十的单词统计******\n\033[0m",path);
-	printf("\033[47;30m单词\t\t\t单词数\n\033[0m");
-	for (int i = 0; i < 10 && set[i].word; i++)
-		printf("\033[40;31m%s\t\t\t%d\n\033[0m",set[i].word,set[i].count);
+	printf("\033[47;30m单词\t\t\t\t\t\t单词数\n\033[0m");
+	for (int i = 0; i < WF_WORD_PRINT_NUMBER && set[i].word; i++)
+		printf("\033[40;31m%-30s\t\t\t%5d\n\033[0m",set[i].word,set[i].count);
 	printf("\n");
 	printf("\033[47;30m点击回车继续\033[0m\n");
 	getchar();
@@ -210,7 +210,7 @@ data_store_object *data_store_object_array_creat(uint32_t object_number,
 {
 	data_store_object *set;
 
-	set = (data_store_object *)malloc(sizeof(data_store_object)*object_number);
+	set = (data_store_object *)calloc(1, sizeof(data_store_object)*object_number);
 	if (!set)
 		return NULL;
 	return set;

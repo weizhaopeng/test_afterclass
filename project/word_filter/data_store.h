@@ -11,7 +11,7 @@
 #define WF_DATA_STORE_EMPTY  0x01
 #define WF_OBJ_ARRAY_EMPTY   0x01
 
-#define WF_WORD_PRINT_NUMBER 10
+#define WF_WORD_PRINT_NUMBER 20
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
