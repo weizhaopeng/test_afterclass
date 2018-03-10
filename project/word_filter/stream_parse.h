@@ -43,7 +43,7 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 	if (!sb)
 		return NULL;
 
-	sb->buf	= (char *)calloc(1, sizeof(char)*capacity);
+	sb->buf	= (char *)calloc(1, sizeof(char)*capacity+1);
 	if (!sb->buf)
 		return NULL;
 

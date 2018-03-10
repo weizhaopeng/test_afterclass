@@ -1,5 +1,7 @@
 #include "data_store.h"
 
+#define DATA_STORE_LIST
+
 /*
  * 双向链表的实现形式
  */
