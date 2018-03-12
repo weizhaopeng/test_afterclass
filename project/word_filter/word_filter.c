@@ -32,14 +32,14 @@ int main(int argc, char **argv)
 		#endif
 
 		#ifdef DATA_STORE_ARRAY
-		ds = data_store_creat(WF_ARRAY_CAPACITY);
+		ds = data_store_create(WF_ARRAY_CAPACITY);
 		if (!ds) {
 			puts("memory error!\n");
 			continue;
 		}
 		#endif
 
-		set = data_store_object_array_creat(WF_WORD_PRINT_NUMBER, WORD_SIZE);
+		set = data_store_object_array_creat(WF_WORD_PRINT_NUMBER);
 		if (!set) {
 			puts("memory error!\n");
 			return 1;

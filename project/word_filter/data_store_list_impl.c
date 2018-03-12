@@ -1,7 +1,5 @@
 #include "data_store.h"
 
-#define DATA_STORE_LIST
-
 /*
  * 双向链表的实现形式
  */
@@ -207,8 +205,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
-data_store_object *data_store_object_array_creat(uint32_t object_number,
-							uint32_t word_size)
+data_store_object *data_store_object_array_creat(uint32_t object_number)
 {
 	data_store_object *set;
 

@@ -1,7 +1,5 @@
 #include "data_store.h"
 
-#define DATA_STORE_ARRAY
-
 /*
  * 动态数组的实现形式
  */
@@ -13,10 +11,20 @@ typedef struct {
 
 static inline int data_store_array_expand(data_store_array *ds_array)
 {
-	if (sizeof(data_store_object)*ds_array->capacity <= 1024*1024)
-		ds_array = realloc(ds_array, sizeof(data_store_object)*ds_array->capacity*2);
-	else
-		ds_array = realloc(ds_array, 1024*1024);
+	uint32_t capacity;
+
+	if (sizeof(data_store_object)*ds_array->capacity <= 1024*1024) {
+		capacity = sizeof(data_store_object)*ds_array->capacity*2;
+		ds_array = (data_store_array *)realloc\
+			(ds_array, capacity);
+		ds_array->capacity = capacity;
+	}
+	else {
+		capacity = sizeof(data_store_object)*ds_array->capacity+1024*1024;
+		ds_array = (data_store_array *)realloc\
+			(ds_array, capacity);
+		ds_array->capacity = capacity;
+	}
 
 	if (!ds_array)
 		return ARRAY_EXPAND_FAIL;
@@ -40,9 +48,9 @@ static inline void unit_exchange(data_store_object obj1, data_store_object obj2)
 	char *word_temp;
 	int   count_temp;
 
-	word_temp = obj2.word;
-	obj2.word = obj1.word;
-	obj1.word = word_temp;
+	word_temp  = obj2.word;
+	obj2.word  = obj1.word;
+	obj1.word  = word_temp;
 
 	count_temp = obj2.count;
 	obj2.count = obj1.count;
@@ -54,11 +62,15 @@ data_store *data_store_create(int capacity)
 	data_store *ds 			   = NULL;
 	data_store_array *ds_array = NULL;
 
-	ds_array = (data_store_array *)malloc(sizeof(data_store_array)*capacity);
+	ds_array = calloc(1, sizeof(data_store_array));
 	if(!ds_array) 
 		return NULL;
+	ds_array->set 	   = (data_store_object *)\
+		calloc(1, sizeof(data_store_object)*capacity);
+	ds_array->capacity = capacity;
+	ds_array->use	   = 0;
 
-	ds = (data_store *)malloc(sizeof(data_store));
+	ds = (data_store *)calloc(1, sizeof(data_store));
 	if(!ds) 
 		return NULL;
 
@@ -75,9 +87,9 @@ void data_store_destroy(data_store *ds)
 	for(uint32_t i = 0; i < ds_array->use; i++) {
 		if (ds_array->set[i].word)
 			free(ds_array->set[i].word);
-		if (ds_array->set)
-			free(ds_array->set);
 	}
+	if (ds_array->set)
+		free(ds_array->set);
 	if (ds_array)
 		free(ds_array);
 	if (ds)
@@ -90,20 +102,22 @@ int data_store_insert_count(data_store *ds, char *word)
 	int unit_number, ret;
 	data_store_array *ds_array;
 
-	ds_array = (data_store_array *)ds->priv;
+	ds_array 	= (data_store_array *)ds->priv;
 	unit_number = unit_find(ds_array, word);
-	if (unit_number >= 0)
+	if (unit_number >= 0 && ds_array->use)
 		ds_array->set[unit_number].count++;
 
 	if (unit_number == -1) {
-		if (ds_array->use < ds_array->capacity) {
+		if (ds_array->use == ds_array->capacity) {
 			ret = data_store_array_expand(ds_array);
 			if (ret == ARRAY_EXPAND_FAIL)
 				return WF_WORD_INSERT_FAIL;
 		}
 
-		ds_array->set[ds_array->use].word  == word;
-		ds_array->set[ds_array->use].count == 1;
+		ds_array->set[ds_array->use].word  = \
+			(char *)calloc(1, strlen(word)+1);
+		strcpy(ds_array->set[ds_array->use].word, word);
+		ds_array->set[ds_array->use].count = 1;
 		ds_array->use++;
 	}
 	return WF_WORD_INSERT_OK;
@@ -137,7 +151,7 @@ int data_store_sort(data_store *ds)
 		return WF_DATA_STORE_EMPTY;
 
 	for(i = 0; i < ds_array->use; i++) {
-		for(j = i+1; j <ds_array->use; j++) {
+		for(j = i+1; j < ds_array->use; j++) {
 			if(ds_array->set[j].count > ds_array->set[i].count) 
 				unit_exchange(ds_array->set[i], ds_array->set[j]);
 		}
@@ -158,8 +172,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
-data_store_object *data_store_object_array_creat(uint32_t object_number,
-							uint32_t word_size)
+data_store_object *data_store_object_array_creat(uint32_t object_number)
 {
 	data_store_object *set;
 
