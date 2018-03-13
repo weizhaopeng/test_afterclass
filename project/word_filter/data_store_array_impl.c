@@ -43,18 +43,18 @@ static inline int unit_find(data_store_array *ds_array, char *word)
 	return -1;
 }
 
-static inline void unit_exchange(data_store_object obj1, data_store_object obj2)
+static inline void unit_exchange(data_store_object *obj1, data_store_object *obj2)
 {
 	char *word_temp;
 	int   count_temp;
 
-	word_temp  = obj2.word;
-	obj2.word  = obj1.word;
-	obj1.word  = word_temp;
+	word_temp   = obj2->word;
+	obj2->word  = obj1->word;
+	obj1->word  = word_temp;
 
-	count_temp = obj2.count;
-	obj2.count = obj1.count;
-	obj1.count = count_temp;
+	count_temp  = obj2->count;
+	obj2->count = obj1->count;
+	obj1->count = count_temp;
 }
 
 data_store *data_store_create(int capacity)
@@ -153,7 +153,7 @@ int data_store_sort(data_store *ds)
 	for(i = 0; i < ds_array->use; i++) {
 		for(j = i+1; j < ds_array->use; j++) {
 			if(ds_array->set[j].count > ds_array->set[i].count) 
-				unit_exchange(ds_array->set[i], ds_array->set[j]);
+				unit_exchange(ds_array->set+i, ds_array->set+j);
 		}
 	}
 	return 0;
