@@ -27,6 +27,7 @@ static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 	return NULL;
 }
 
+/*TODO：存在内存泄漏*/
 static data_store_list_node *node_insert(char *word)
 {
 	data_store_list_node *node_insert;
@@ -43,6 +44,7 @@ static data_store_list_node *node_insert(char *word)
 	word_insert = (char *)calloc(1, sizeof(char)*(strlen(word)+1));
 	if (!word_insert)
 		return NULL;
+	/*TODO: strncpy*/
 	strcpy(word_insert, word);
 
 	node_insert->obj->word  = word_insert;
@@ -62,6 +64,9 @@ static inline void node_free(data_store_list_node *node)
 	}
 }
 
+/*TODO：需要判断指针变量是否存在，容易出现野指针
+ *NOTE: 指针变量在使用前，需要对其可用性做判断！下同
+ */
 static inline void node_count_inc(data_store_list_node *node)
 {
 	node->obj->count++;
@@ -82,6 +87,7 @@ static inline void node_exchange(data_store_list_node *node1, data_store_list_no
 
 }
 
+/*TODO:内存泄漏*/
 data_store *data_store_create(void)
 {
 	data_store      	 *ds      	= NULL;
@@ -182,6 +188,9 @@ int data_store_sort(data_store *ds)
 	if (ds_list->count == 0)
 		return WF_DATA_STORE_EMPTY;
 
+	/*for (data_store_list_node *node_i = ds_list->head->next;
+	    node_i != null;
+	    node_i = node_i->next) 建议for循环的变量在内部声明使用，中间的判断不要偷懒*/
 	for (node_i = ds_list->head->next; node_i; node_i = node_i->next) {
 		for (node_j = node_i->next; node_j; node_j = node_j->next)
 		{
@@ -205,6 +214,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
+/*TODO：下面两个函数应该由上层自己去完成，不应该出现在这里！！！*/
 data_store_object *data_store_object_array_creat(uint32_t object_number)
 {
 	data_store_object *set;
