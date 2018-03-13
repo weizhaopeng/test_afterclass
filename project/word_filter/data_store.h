@@ -19,7 +19,7 @@
 #define WF_WORD_PRINT_NUMBER  20
 
 /*定义存储的数据类型*/
-#define DATA_STORE_ARRAY 
+#define DATA_STORE_LIST
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
