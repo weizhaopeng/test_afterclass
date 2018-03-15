@@ -1,5 +1,6 @@
 #include "data_store.h"
 
+#ifdef DATA_STORE_ARRAY
 /*
  * 动态数组的实现形式
  */
@@ -186,3 +187,5 @@ void data_store_object_array_destroy(data_store_object *set, uint32_t object_num
 {
 	free(set);
 }
+
+#endif

@@ -1,5 +1,7 @@
 #include "data_store.h"
 
+#ifdef DATA_STORE_LIST
+
 /*
  * 双向链表的实现形式
  */
@@ -18,12 +20,12 @@ typedef struct {
 /*list operations here!*/
 static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 {
-	data_store_list_node *node_temp;
-
-	for (node_temp = ds_list->head->next; node_temp; node_temp = node_temp->next)
+	for (data_store_list_node *node_temp = ds_list->head->next; 
+		node_temp; node_temp = node_temp->next) 
+	{
 		if (!strcmp(word, node_temp->obj->word))
 			return node_temp;
-
+	}
 	return NULL;
 }
 
@@ -38,14 +40,26 @@ static data_store_list_node *node_insert(char *word)
 		return NULL;
 
 	node_insert->obj = (data_store_object *)calloc(1, sizeof(data_store_object));
-	if (!node_insert->obj) 
+	if (!node_insert->obj) {
+		if (node_insert)
+			wf_free(node_insert);
 		return NULL;
-	
+	}
+
 	word_insert = (char *)calloc(1, sizeof(char)*(strlen(word)+1));
-	if (!word_insert)
+	if (!word_insert) {
+		if (node_insert) {
+			if (node_insert->obj) {
+				wf_free(node_insert->obj);
+				node_insert = NULL;
+			}
+			wf_free(node_insert);
+			node_insert = NULL;
+		}
 		return NULL;
+	}
 	/*TODO: strncpy*/
-	strcpy(word_insert, word);
+	strncpy(word_insert, word, WORD_LENGTH_MAX);
 
 	node_insert->obj->word  = word_insert;
 	node_insert->obj->count = 1;
@@ -57,19 +71,24 @@ static inline void node_free(data_store_list_node *node)
 	if (node) {
 		if(node->obj) {
 			if(node->obj->word)
-				free(node->obj->word);
-			free(node->obj);
+				wf_free(node->obj->word);
+			wf_free(node->obj);
 		}
-		free(node);
+		wf_free(node);
 	}
 }
-
 /*TODO：需要判断指针变量是否存在，容易出现野指针
  *NOTE: 指针变量在使用前，需要对其可用性做判断！下同
  */
-static inline void node_count_inc(data_store_list_node *node)
+static inline int node_count_inc(data_store_list_node *node)
 {
-	node->obj->count++;
+	if (node) {
+		if (node->obj) {
+			node->obj->count++;
+			return 0;
+		}
+	}
+	return ENOMEM;
 }
 
 static inline void node_exchange(data_store_list_node *node1, data_store_list_node *node2)
@@ -88,7 +107,7 @@ static inline void node_exchange(data_store_list_node *node1, data_store_list_no
 }
 
 /*TODO:内存泄漏*/
-data_store *data_store_create(void)
+data_store *data_store_create(int capacity)
 {
 	data_store      	 *ds      	= NULL;
 	data_store_list 	 *ds_list 	= NULL;
@@ -99,8 +118,11 @@ data_store *data_store_create(void)
 		return NULL;
 	
 	head_node = (data_store_list_node *)calloc(1,sizeof(data_store_list_node));
-	if(!head_node)
+	if(!head_node) {
+		if (ds_list)
+			wf_free(ds_list);
 		return NULL;
+	}
 
 	ds_list->head 	= ds_list->tail   = head_node;
 	ds_list->count  = 0;
@@ -109,7 +131,10 @@ data_store *data_store_create(void)
 
 	ds = (data_store *)calloc(1, sizeof(data_store));
 	if (!ds) {
-		free(ds_list);
+		if (ds_list)
+			wf_free(ds_list);
+		if (head_node)
+			wf_free(head_node);
 		return NULL;
 	}
 
@@ -121,18 +146,20 @@ data_store *data_store_create(void)
 
 void data_store_destroy(data_store *ds)
 {
-	data_store_list_node *node_temp;
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
-	for (node_temp = ds_list->tail; ds_list->tail; ds_list->tail = node_temp) { 
+	for (data_store_list_node *node_temp = ds_list->tail; 
+		ds_list->tail != NULL; 
+		ds_list->tail = node_temp) 
+	{ 
 		node_free(ds_list->tail);
 		node_temp = node_temp->prev;
 	}
 	if (ds_list)
-		free(ds_list);
+		wf_free(ds_list);
 	if (ds)
-		free(ds);
+		wf_free(ds);
 }
 
 int data_store_insert_count(data_store *ds, char *word)
@@ -181,7 +208,6 @@ void data_store_get_max_count(data_store *ds, data_store_object *set, int index)
 
 int data_store_sort(data_store *ds)
 {
-	data_store_list_node *node_i, *node_j;
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
@@ -191,8 +217,11 @@ int data_store_sort(data_store *ds)
 	/*for (data_store_list_node *node_i = ds_list->head->next;
 	    node_i != null;
 	    node_i = node_i->next) 建议for循环的变量在内部声明使用，中间的判断不要偷懒*/
-	for (node_i = ds_list->head->next; node_i; node_i = node_i->next) {
-		for (node_j = node_i->next; node_j; node_j = node_j->next)
+	for (data_store_list_node *node_i = ds_list->head->next; 
+		node_i != NULL; node_i = node_i->next) 
+	{
+		for (data_store_list_node *node_j = node_i->next; 
+			node_j != NULL; node_j = node_j->next)
 		{
 			if (node_j->obj->count > node_i->obj->count)
 				node_exchange(node_i, node_j);
@@ -214,7 +243,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
-/*TODO：下面两个函数应该由上层自己去完成，不应该出现在这里！！！*/
+/*TODO：下面两个函数应该由上层自己去完成，不应该出现在这里！！！
 data_store_object *data_store_object_array_creat(uint32_t object_number)
 {
 	data_store_object *set;
@@ -227,7 +256,8 @@ data_store_object *data_store_object_array_creat(uint32_t object_number)
 	
 void data_store_object_array_destroy(data_store_object *set, uint32_t object_number)
 {
-	free(set);
+	wf_free(set);
 }
-	
-	
+ */
+
+#endif

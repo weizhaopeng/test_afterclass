@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "error_check.h"
+#include <errno.h>
 
 #define WF_SB_EMPTY  	 0x00
 #define WF_SB_NOTEMPTY 	 0x01
@@ -17,7 +17,7 @@
 #define WORD_GET_FAIL	 0X01
 #define WORD_INSERT_OK 	 0x00
 
-#define WORD_SIZE 		 0x14
+#define WORD_LENGTH_MAX  0x14
 
 #define WF_SB_CAPACITY   (1024*30)
 /*

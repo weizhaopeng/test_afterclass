@@ -14,7 +14,7 @@ int stream_input_parse(stream_buffer *sb, char *path)
 		return ENOENT;
 	}
 
-	word = (char *)malloc(sizeof(char)*WORD_SIZE);
+	word = (char *)malloc(sizeof(char)*WORD_LENGTH_MAX);
 	if (!word)
 		return ENOMEM;
 
