@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 	{
 		path = argv[i];
 
-		sb  = stream_buffer_create(WF_SB_CAPACITY);
+		sb  = stream_buffer_create(STREAM_BUFFER_CAPACITY);
 		if (!sb) {
 			puts("memory error!");
 			continue;
