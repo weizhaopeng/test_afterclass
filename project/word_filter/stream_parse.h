@@ -17,6 +17,7 @@
 #define WORD_GET_FAIL	 0X01
 #define WORD_INSERT_OK 	 0x00
 
+#define SB_EXPAND_FILE 0x01
 #define WORD_SIZE 		 0x14
 
 #define WF_SB_CAPACITY   (1024*30)
@@ -35,6 +36,8 @@ static inline int stream_buffer_is_empty(stream_buffer *sb);
 
 static inline int stream_buffer_empty_size(stream_buffer *sb);
 
+static inline int stream_buffer_expand(stream_buffer *sb);
+
 static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 {
 	stream_buffer *sb; 
@@ -44,8 +47,11 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 		return NULL;
 
 	sb->buf	= (char *)calloc(1, sizeof(char)*capacity+1);
-	if (!sb->buf)
+	if (!sb->buf) {
+		if (sb)
+			free(sb);
 		return NULL;
+	}
 
 	sb->capacity      = capacity;
 	sb->head 		  = sb->tail = 0;
@@ -54,30 +60,40 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 
 static inline void stream_buffer_destroy(stream_buffer *sb)
 {
-	if(sb->buf)
-		free(sb->buf);
-	if(sb)
+	if (sb) {
+		if (sb->buf)
+			free(sb->buf);
 		free(sb);
+	}
 }
 
 static inline int stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
 	if (stream_buffer_empty_size(sb) <= len)
-		return WF_SB_FULL;
-	else {
-		for(int i = 0; i < len; i++) {
+		if (stream_buffer_expand(sb) == SB_EXPAND_FILE)
+			return WORD_INSERT_FAIL;
+
+	if (!sb || !sb->buf)
+		return WF_INSERT_FAIL;
+		
+	for(int i = 0; i < len && i < WORD_SIZE; i++) {
+		if (word[i] != '\0') {
+			sb->tail 		  = (sb->tail+1)%sb->capacity;
 			sb->buf[sb->tail] = word[i];
-			sb->tail = (sb->tail+1)%sb->capacity;
 		}
-		sb->tail = (sb->tail+1)%sb->capacity;
-		sb->buf[sb->tail] = '\0';
-		return WORD_INSERT_OK;
 	}
+	sb->tail 		  = (sb->tail+1)%sb->capacity;
+	sb->buf[sb->tail] = '\0';
+	return WORD_INSERT_OK;
 }
 
+//debug here
 static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
 {
+	if (!sb || sb->buf)
+		return SB_GET_WORD_FAIL;
+
 	int i = 0;
 
 	while (sb->buf[sb->head] == '\0' && sb->head != sb->tail)
@@ -109,6 +125,29 @@ static inline int stream_buffer_is_empty(stream_buffer *sb)
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
 	return (sb->capacity-(sb->tail - sb->head + sb->capacity) % sb->capacity-1);
+}
+
+static inline int stream_buffer_expand(stream_buffer *sb)
+{
+	if (!sb || !sb->buf)
+		return WF_SB_EXPAND_FAIL;
+	
+	int capacity;
+
+	capacity = sizeof(char)*sb->capacity;
+	if (capacity < 1024*1024) {
+		sb->buf 	 = (char *)realloc(sb->buf, capacity*2);
+		sb->capacity = capacity;
+	}
+	else {
+		capacity 	 = sb->capacity+1024*1024;
+		sb->buf  	 = (char *)realloc(sb->buf, capacity*2);
+		sb->capacity = capacity;
+	}
+	if (sb->buf == NULL)
+		return SB_EXPAND_FAIL;
+	else
+		return 0;
 }
 
 /*

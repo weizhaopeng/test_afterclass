@@ -23,21 +23,12 @@ int main(int argc, char **argv)
 			puts("memory error!");
 			continue;
 		}
-		#ifdef DATA_STORE_LIST
-		ds  = data_store_create();
-		if (!ds) {
-			puts("memory error!\n");
-			continue;
-		}
-		#endif
 
-		#ifdef DATA_STORE_ARRAY
 		ds = data_store_create(WF_ARRAY_CAPACITY);
 		if (!ds) {
 			puts("memory error!\n");
 			continue;
 		}
-		#endif
 
 		set = data_store_object_array_creat(WF_WORD_PRINT_NUMBER);
 		if (!set) {

@@ -17,7 +17,7 @@
 
 #define WF_ARRAY_CAPACITY	  100
 #define WF_WORD_PRINT_NUMBER  20
-
+#define WF_NODE_INCOMPLETE	  0x01
 /*定义存储的数据类型*/
 #define DATA_STORE_ARRAY 
 
@@ -50,7 +50,7 @@ typedef struct {
  * 数据存储对象的创建和销毁
  */
 #ifdef DATA_STORE_LIST
-data_store *data_store_create(void);
+data_store *data_store_create(int capacity);
 #endif
 
 #ifdef DATA_STORE_ARRAY
