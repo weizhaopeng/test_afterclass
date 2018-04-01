@@ -1,7 +1,9 @@
 #include "data_store.h"
 
+#ifdef DATA_STORE_LIST
+
 /*
-t* 双向链表的实现形式
+ * 双向链表的实现形式
  */
 typedef struct list_node {
 	data_store_object *obj;
@@ -15,32 +17,23 @@ typedef struct {
 	uint32_t              count;
 } data_store_list;
 
-/*
- *list operations here!
- *compare the strings generally compare the lenth 
- *of them firstly
- */
+/*list operations here!*/
 static data_store_list_node *node_find(data_store_list *ds_list, char *word)
 {
-	data_store_list_node *node_temp = NULL;
-
-	for (node_temp = ds_list->head->next;
-		node_temp != NULL; 
-		node_temp = node_temp->next) 
+	for (data_store_list_node *node_temp = ds_list->head->next; 
+		node_temp; node_temp = node_temp->next) 
 	{
-		if (strlen(node_temp->obj->word) != strlen(word))
-				continue;
-		else
-			if (!strcmp(word, node_temp->obj->word))
-				return node_temp;
+		if (!strcmp(word, node_temp->obj->word))
+			return node_temp;
 	}
 	return NULL;
 }
 
+/*TODO：存在内存泄漏*/
 static data_store_list_node *node_insert(char *word)
 {
-	data_store_list_node *node_insert = NULL;
-	char *word_insert 				  = NULL;
+	data_store_list_node *node_insert;
+	char *word_insert;
 
 	node_insert = (data_store_list_node *)calloc(1, sizeof(data_store_list_node));
 	if (!node_insert) 
@@ -49,19 +42,24 @@ static data_store_list_node *node_insert(char *word)
 	node_insert->obj = (data_store_object *)calloc(1, sizeof(data_store_object));
 	if (!node_insert->obj) {
 		if (node_insert)
-			free(node_insert);
+			wf_free(node_insert);
 		return NULL;
 	}
+
 	word_insert = (char *)calloc(1, sizeof(char)*(strlen(word)+1));
 	if (!word_insert) {
-		if (node_insert->obj)
-			free(node_insert->obj);
-		if (node_insert)
-			free(node_insert);
+		if (node_insert) {
+			if (node_insert->obj) {
+				wf_free(node_insert->obj);
+				node_insert = NULL;
+			}
+			wf_free(node_insert);
+			node_insert = NULL;
+		}
 		return NULL;
 	}
-	//add max_length of the word
-	strncpy(word_insert, word, WORD_SIZE);
+	/*TODO: strncpy*/
+	strncpy(word_insert, word, WORD_LENGTH_MAX);
 
 	node_insert->obj->word  = word_insert;
 	node_insert->obj->count = 1;
@@ -73,13 +71,15 @@ static inline void node_free(data_store_list_node *node)
 	if (node) {
 		if(node->obj) {
 			if(node->obj->word)
-				free(node->obj->word);
-			free(node->obj);
+				wf_free(node->obj->word);
+			wf_free(node->obj);
 		}
-		free(node);
+		wf_free(node);
 	}
 }
-
+/*TODO：需要判断指针变量是否存在，容易出现野指针
+ *NOTE: 指针变量在使用前，需要对其可用性做判断！下同
+ */
 static inline int node_count_inc(data_store_list_node *node)
 {
 	if (node) {
@@ -88,29 +88,25 @@ static inline int node_count_inc(data_store_list_node *node)
 			return 0;
 		}
 	}
-	return WF_NODE_INCOMPLETE;
+	return ENOMEM;
 }
 
-static inline int node_exchange(data_store_list_node *node1, data_store_list_node *node2)
+static inline void node_exchange(data_store_list_node *node1, data_store_list_node *node2)
 {
 	char *word_temp;
 	int	  count_temp;
 
-	if (node1 && node2) {
-		if (node1->obj && node2->obj) {
-			word_temp 		  = node1->obj->word;
-			node1->obj->word  = node2->obj->word;
-			node2->obj->word  = word_temp;
+	word_temp 		  = node1->obj->word;
+	node1->obj->word  = node2->obj->word;
+	node2->obj->word  = word_temp;
 
-			count_temp 		  = node1->obj->count;
-			node1->obj->count = node2->obj->count;
-			node2->obj->count = count_temp;
-			return 0;
-		}
-	}
-	return WF_NODE_INCOMPLETE;
+	count_temp 		  = node1->obj->count;
+	node1->obj->count = node2->obj->count;
+	node2->obj->count = count_temp;
+
 }
 
+/*TODO:内存泄漏*/
 data_store *data_store_create(int capacity)
 {
 	data_store      	 *ds      	= NULL;
@@ -124,7 +120,7 @@ data_store *data_store_create(int capacity)
 	head_node = (data_store_list_node *)calloc(1,sizeof(data_store_list_node));
 	if(!head_node) {
 		if (ds_list)
-			free(ds_list);
+			wf_free(ds_list);
 		return NULL;
 	}
 
@@ -136,9 +132,9 @@ data_store *data_store_create(int capacity)
 	ds = (data_store *)calloc(1, sizeof(data_store));
 	if (!ds) {
 		if (ds_list)
-			free(ds_list);
+			wf_free(ds_list);
 		if (head_node)
-			free(head_node);
+			wf_free(head_node);
 		return NULL;
 	}
 
@@ -153,14 +149,17 @@ void data_store_destroy(data_store *ds)
 	data_store_list		 *ds_list;
 
 	ds_list = (data_store_list *)ds->priv;
-	for (data_store_list_node *node_temp = ds_list->tail; ds_list->tail; ds_list->tail = node_temp) { 
+	for (data_store_list_node *node_temp = ds_list->tail; 
+		ds_list->tail != NULL; 
+		ds_list->tail = node_temp) 
+	{ 
 		node_free(ds_list->tail);
 		node_temp = node_temp->prev;
 	}
 	if (ds_list)
-		free(ds_list);
+		wf_free(ds_list);
 	if (ds)
-		free(ds);
+		wf_free(ds);
 }
 
 int data_store_insert_count(data_store *ds, char *word)
@@ -171,14 +170,12 @@ int data_store_insert_count(data_store *ds, char *word)
 	ds_list = (data_store_list *)ds->priv;
 	node = node_find(ds_list, word);
 	if (node) {
-		if (node_count_inc(node) == WF_NODE_INCOMPLETE)
-			return WF_WORD_INSERT_FAIL;
-		else
-			return 0;
+		node_count_inc(node);
+		return 0;
 	}
 	else {
 		node = node_insert(word);
-		if (!node && !node->obj)
+		if (!node)
 			return WF_WORD_INSERT_FAIL;
 
 		node->prev 	  		= ds_list->tail;
@@ -217,8 +214,12 @@ int data_store_sort(data_store *ds)
 	if (ds_list->count == 0)
 		return WF_DATA_STORE_EMPTY;
 
+	/*for (data_store_list_node *node_i = ds_list->head->next;
+	    node_i != null;
+	    node_i = node_i->next) 建议for循环的变量在内部声明使用，中间的判断不要偷懒*/
 	for (data_store_list_node *node_i = ds_list->head->next; 
-		node_i != NULL; node_i = node_i->next) {
+		node_i != NULL; node_i = node_i->next) 
+	{
 		for (data_store_list_node *node_j = node_i->next; 
 			node_j != NULL; node_j = node_j->next)
 		{
@@ -242,6 +243,7 @@ void data_store_print_max_count(data_store_object *set, char *path)
 	return;
 }
 
+/*TODO：下面两个函数应该由上层自己去完成，不应该出现在这里！！！
 data_store_object *data_store_object_array_creat(uint32_t object_number)
 {
 	data_store_object *set;
@@ -254,7 +256,8 @@ data_store_object *data_store_object_array_creat(uint32_t object_number)
 	
 void data_store_object_array_destroy(data_store_object *set, uint32_t object_number)
 {
-	free(set);
+	wf_free(set);
 }
-	
-	
+ */
+
+#endif
