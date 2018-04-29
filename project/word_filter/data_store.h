@@ -1,7 +1,7 @@
 #ifndef _DATA_STORE_H_
 #define _DATA_STORE_H_
 
-#include "error_check.h"
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
@@ -17,9 +17,13 @@
 
 #define WF_ARRAY_CAPACITY	  100
 #define WF_WORD_PRINT_NUMBER  20
+<<<<<<< HEAD
 
 /*定义存储的数据类型*/
 #define DATA_STORE_LIST
+=======
+#define WORD_LENGTH_MAX  	  0x14
+>>>>>>> word_filter_rebuild
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
@@ -49,13 +53,7 @@ typedef struct {
 /*
  * 数据存储对象的创建和销毁
  */
-#ifdef DATA_STORE_LIST
-data_store *data_store_create(void);
-#endif
-
-#ifdef DATA_STORE_ARRAY
 data_store *data_store_create(int capacity);
-#endif
 void        data_store_destroy(data_store *ds);
 
 /*
@@ -80,4 +78,10 @@ void data_store_print_max_count(data_store_object *set, char *peth);
 void data_store_object_array_destroy(data_store_object *set, uint32_t object_number);
 data_store_object *data_store_object_array_creat(uint32_t object_number);
 
+static inline void wf_free(void *ptr)
+{
+	if (ptr)
+		free(ptr);
+	ptr = NULL;
+}
 #endif

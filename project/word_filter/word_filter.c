@@ -1,6 +1,5 @@
-#include "data_store.h"
 #include "stream_parse.h"
-
+#include "data_store.h"
 
 int stream_input_parse(stream_buffer *sb, char *path);
 
@@ -12,40 +11,24 @@ int main(int argc, char **argv)
 	//step2: 对象初始化，初始化stream buffer和data store
 	stream_buffer 	  *sb;
 	data_store	  	  *ds;
-	data_store_object *set;
 
 	for (int i=1 ; i<argc ; i++)
 	{
 		path = argv[i];
 
-		sb  = stream_buffer_create(WF_SB_CAPACITY);
+		sb  = stream_buffer_create(STREAM_BUFFER_CAPACITY);
 		if (!sb) {
 			puts("memory error!");
 			continue;
 		}
-		#ifdef DATA_STORE_LIST
-		ds  = data_store_create();
-		if (!ds) {
-			puts("memory error!\n");
-			continue;
-		}
-		#endif
 
-		#ifdef DATA_STORE_ARRAY
 		ds = data_store_create(WF_ARRAY_CAPACITY);
 		if (!ds) {
 			puts("memory error!\n");
 			continue;
 		}
-		#endif
 
-		set = data_store_object_array_creat(WF_WORD_PRINT_NUMBER);
-		if (!set) {
-			puts("memory error!\n");
-			return 1;
-		}
-
-		word = (char *)calloc(1, sizeof(char)*WORD_SIZE);
+		word = (char *)calloc(1, sizeof(char)*WORD_LENGTH_MAX);
 		if (!word) {
 			puts("memory error!\n");
 			return 1;
@@ -78,14 +61,20 @@ int main(int argc, char **argv)
 		if (ret)
 			puts("data store is empty\n");
 		
-		data_store_get_max_count	   (ds, set, WF_WORD_PRINT_NUMBER);
-			
-		data_store_print_max_count	   (set, path);
+		data_store_object *set;
 
-		data_store_object_array_destroy(set, WF_WORD_PRINT_NUMBER);
-		stream_buffer_destroy	  	   (sb);
-		data_store_destroy		  	   (ds);
-		free(word);
+		set = (data_store_object *)calloc\
+			(1, sizeof(data_store_object)*WF_WORD_PRINT_NUMBER);
+		if (!set)
+			continue;
+		
+		data_store_get_max_count  (ds, set, WF_WORD_PRINT_NUMBER);
+		data_store_print_max_count(set, path);
+
+		stream_buffer_destroy (sb);
+		data_store_destroy	  (ds);
+		wf_free				  (set);
+		wf_free				  (word);
 	}
 	return 0;
 	//备注：有空可以考虑一下，为什么对数据进行多份存储，以及为什么对框架进行这种划分？

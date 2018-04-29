@@ -5,21 +5,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "error_check.h"
+#include <errno.h>
 
-#define WF_SB_EMPTY  	 0x00
-#define WF_SB_NOTEMPTY 	 0x01
+#define WF_SB_EMPTY  	 	   0x00
+#define WF_SB_NOTEMPTY 	 	   0x01
 
-#define WF_SB_FULL 		 0x01
-#define WF_SB_NOTFULL	 0x00
+#define WF_SB_FULL 		 	   0x01
+#define WF_SB_NOTFULL	 	   0x00
 
-#define WORD_GET_OK	 	 0x00 
-#define WORD_GET_FAIL	 0X01
-#define WORD_INSERT_OK 	 0x00
+#define WORD_GET_OK	 	   	   0x00 
+#define WORD_GET_FAIL	 	   0X01
+#define WORD_INSERT_OK 	 	   0x00
+#define WORD_INSERT_FAIL	   0x01
+#define STREAM_BUFFER_EXPAND_FAIL 0x01
 
-#define WORD_SIZE 		 0x14
+#define WORD_LENGTH_MAX 	   0x14
 
-#define WF_SB_CAPACITY   (1024*30)
+#define STREAM_BUFFER_CAPACITY (1024*30)
 /*
  * 数据流缓冲区
  * 实现为一个环形队列
@@ -30,6 +32,8 @@ typedef struct stream_buffer {
 	uint32_t  tail;
 	char     *buf;
 } stream_buffer;
+
+static inline int stream_buffer_expand(stream_buffer *sb);
 
 static inline int stream_buffer_is_empty(stream_buffer *sb);
 
@@ -44,8 +48,13 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 		return NULL;
 
 	sb->buf	= (char *)calloc(1, sizeof(char)*capacity+1);
-	if (!sb->buf)
+	if (!sb->buf) {
+		if (sb) {
+			free(sb);
+			sb = NULL;
+		}
 		return NULL;
+	}
 
 	sb->capacity      = capacity;
 	sb->head 		  = sb->tail = 0;
@@ -54,26 +63,51 @@ static inline stream_buffer *stream_buffer_create(uint32_t capacity)
 
 static inline void stream_buffer_destroy(stream_buffer *sb)
 {
-	if(sb->buf)
-		free(sb->buf);
-	if(sb)
+	if (sb) {
+		if (sb->buf) {
+			free(sb->buf);
+			sb->buf = NULL;
+		}
 		free(sb);
+		sb = NULL;
+	}
 }
 
 static inline int stream_buffer_insert_word(stream_buffer *sb,
 						char *word, int len)
 {
 	if (stream_buffer_empty_size(sb) <= len)
-		return WF_SB_FULL;
-	else {
-		for(int i = 0; i < len; i++) {
+		if (stream_buffer_expand(sb) == STREAM_BUFFER_EXPAND_FAIL)
+			return WORD_INSERT_FAIL;
+
+	if (sb == NULL || sb->buf == NULL)
+		return WORD_INSERT_FAIL;
+		
+	for(int i = 0; i < len && i < WORD_LENGTH_MAX; i++) {
+		if (word[i] != '\0') {
+			sb->tail 		  = (sb->tail+1)%sb->capacity;
 			sb->buf[sb->tail] = word[i];
-			sb->tail = (sb->tail+1)%sb->capacity;
 		}
-		sb->tail = (sb->tail+1)%sb->capacity;
-		sb->buf[sb->tail] = '\0';
-		return WORD_INSERT_OK;
 	}
+	sb->tail 		  = (sb->tail+1)%sb->capacity;
+	sb->buf[sb->tail] = '\0';
+	return WORD_INSERT_OK;
+}
+
+static inline int stream_buffer_expand(stream_buffer *sb)
+{
+	int capacity;
+
+	capacity = sb->capacity*WORD_LENGTH_MAX;
+	if (capacity < 1024*1024)
+		sb->buf = realloc(sb->buf, capacity*2);
+	else
+		sb->buf = realloc(sb->buf, capacity+1024*1024);
+	
+	if (!sb->buf)
+		return STREAM_BUFFER_EXPAND_FAIL;
+	else
+		return 0;
 }
 
 static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
@@ -100,14 +134,16 @@ static inline int stream_buffer_get_word(stream_buffer *sb, char *word)
 
 static inline int stream_buffer_is_empty(stream_buffer *sb)
 {
-	if(sb->tail == sb->head)
-		return WF_SB_EMPTY;
-	else 
+	if((sb->tail+1)%sb->capacity == sb->head)
 		return WF_SB_NOTEMPTY;
+	else 
+		return WF_SB_EMPTY;
 }
 
 static inline int stream_buffer_empty_size(stream_buffer *sb)
 {
+	if (!sb)
+		return 0;
 	return (sb->capacity-(sb->tail - sb->head + sb->capacity) % sb->capacity-1);
 }
 
