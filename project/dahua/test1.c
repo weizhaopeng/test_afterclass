@@ -45,7 +45,7 @@ static inline bool push_back(const node_buffer *nb, const int i)
 	if (nb == NULL)
 		return false;
 
-	if (nb->m_front == (nb->m_back+1)%nb->m_size){
+	if (nb->m_front == (nb->m_back+1)%nb->m_max_size){
 		return false;
 	else
 		nb->m_queue[++nb->m_back] = i;
@@ -53,10 +53,97 @@ static inline bool push_back(const node_buffer *nb, const int i)
 	return true;
 }
 
+static inline bool pop_front(const node_buffer *nb)
+{
+	if (nb == NULL)
+		return false;
+	if (nb->m_front == nb->m_back)
+		return false;
+	else {
+		nb->m_front = (nb->m_front+1)%nb->m_max_size;
+		nb->m_size  --;
+		return true;
+	}
+}
 
+static inline int front(const node_buffer *nb)
+{
+	if (nb == NULL)
+		return -1;
+	if (nb->m_size == 0)
+		return -1;
 
+	return nb->m_queue[(nb->m_front+1)%nb->m_max_size];
+}
 
+static inline int back(const node_buffer *nb)
+{
+	if (nb == NULL)
+		return -1;
+	if (nb->m_size == nb->m_max_size)
+		return -1;
+	
+	return nb->m_queue[nb->m_back];
+}
 
+static inline int size(const node_buffer *nb)
+{
+	if (nb == NULL)
+		return -1;
+
+	return nb->m_size;
+}
+
+static inline void node_buffer_free(node_buffer *nb)
+{
+	if (nb == NULL)
+		return ;
+	else {
+		if (nb->m_queue == NULL) {
+			free(nb);
+			nb = NULL;
+		}
+		else {
+			free(nb->m_queue);
+			free(nb);
+			nb = NULL;
+		}
+	}
+	return;
+}
+
+int main(void)
+{
+	int example_num;
+	scanf("%d", &example_num);
+
+	for (int i_ex = 0; i_ex < example_num; i_ex++) {
+		int 		 node_num, maxsize, reti, temp;
+		bool		 retb;
+		node_buffer *nb = NULL;
+		int 	 	 
+
+		scanf("%d", &node_num);
+		scanf("%d", &maxsize);
+		nb = node_buffer_create(maxsize);
+		if (nb == -1)
+			return -1;
+
+		for (int i_node = 0; i < node_num-1; i++) {
+			scanf("%[^ ]d", &temp);
+			ret = push_back(nb, temp);
+			nb->m_max_size++;
+		}
+		int pop_num;
+		scanf("%d", &pop_num);
+
+		for (int i_pop = 0; i_pop < pop_num; i_pop++)
+			ret = pop_front(nb);
+
+		node_buffer_print(nb);
+	}
+	return 0;
+}
 
 
 
