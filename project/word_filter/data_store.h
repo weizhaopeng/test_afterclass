@@ -18,12 +18,16 @@
 #define WF_ARRAY_CAPACITY	  100
 #define WF_WORD_PRINT_NUMBER  20
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /*定义存储的数据类型*/
 #define DATA_STORE_LIST
 =======
 #define WORD_LENGTH_MAX  	  0x14
 >>>>>>> word_filter_rebuild
+=======
+#define WORD_LENGTH_MAX  	  0x14
+>>>>>>> b18813e553a0d3e9f6af0d18b96423857911a86d
 
 /*
  * 数据存储模块，实现形式可以为链表、数组或散列表。
