@@ -1,64 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 
-enum bool {
+typedef enum bool {
 	false = 0x00,
 	true
-};
+}bool;
 
-typedef struct {
+typedef struct node_buffer {
 	int *m_queue;
 	int  m_max_size;
 	int  m_front;
     int  m_back;
     int  m_size;
 	
-	bool (*push_back)(node_buffer *, int);
-	bool (*pop_front)(node_buffer *);
-	int  (*front)    (node_buffer *);
-	int  (*back)	 (node_buffer *);
-	int  (*size)	 (node_buffer *);
+	bool (*push_back)(struct node_buffer *, int);
+	bool (*pop_front)(struct node_buffer *);
+	int  (*front)    (struct node_buffer *);
+	int  (*back)	 (struct node_buffer *);
+	int  (*size)	 (struct node_buffer *);
 }node_buffer;
 	
-static inline node_buffer *node_buffer_create(int maxsize)
-{
-	node_buffer *nb = NULL;
-	nb = (node_buffer *)malloc(sizeof(node_buffer));
-	if (nb == NULL)
-		return -1;
-	
-	nb->m_queue = (int *)malloc(sizeof(int)*maxsize+1);
-	if (nb->m_queue == NULL) {
-		free(nb);
-		nb == NULL;
-		return -1;
-	}
-	nb->m_max_size = maxsize;
-	nb->m_front    = -1;
-	nb->m_back	   = -1;
-	nb->m_size	   = maxsize;
-
-	return nb;
-}
 
 static inline bool push_back(node_buffer *nb, const int i)
 {
-	if (nb == NULL)
-		return false;
-
 	if (nb->m_front == (nb->m_back+1)%nb->m_max_size)
 		return false;
 	else
 		nb->m_queue[++nb->m_back] = i;
-	
 	return true;
 }
 
 static inline bool pop_front(node_buffer *nb)
 {
-	if (nb == NULL)
-		return false;
 	if (nb->m_front == nb->m_back)
 		return false;
 	else {
@@ -70,48 +43,56 @@ static inline bool pop_front(node_buffer *nb)
 
 static inline int front(const node_buffer *nb)
 {
-	if (nb == NULL)
-		return -1;
-	if (nb->m_size == 0)
-		return -1;
-
 	return nb->m_queue[(nb->m_front+1)%nb->m_max_size];
 }
 
 static inline int back(const node_buffer *nb)
 {
-	if (nb == NULL)
-		return -1;
-	if (nb->m_size == nb->m_max_size)
-		return -1;
-	
 	return nb->m_queue[nb->m_back];
 }
 
 static inline int size(const node_buffer *nb)
 {
-	if (nb == NULL)
-		return -1;
-
 	return nb->m_size;
 }
 
 static inline void node_buffer_free(node_buffer *nb)
 {
-	if (nb == NULL)
-		return ;
+	if (nb->m_queue == NULL) {
+		free(nb);
+		nb = NULL;
+	}
 	else {
-		if (nb->m_queue == NULL) {
-			free(nb);
-			nb = NULL;
-		}
-		else {
-			free(nb->m_queue);
-			free(nb);
-			nb = NULL;
-		}
+		free(nb->m_queue);
+		free(nb);
+		nb = NULL;
 	}
 	return;
+}
+
+static inline node_buffer *node_buffer_create(int maxsize)
+{
+	node_buffer *nb = (node_buffer *)malloc(sizeof(node_buffer));
+	nb->m_queue     = (int *)malloc(sizeof(int)*maxsize+1);
+	
+	nb->m_max_size = maxsize;
+	nb->m_front    = -1;
+	nb->m_back	   = -1;
+	nb->m_size	   = 0;
+	
+	nb->push_back = push_back;
+	nb->pop_front = pop_front;
+	nb->front	  = front;
+	nb->back 	  = back;
+	nb->size	  = size;
+
+	return nb;
+}
+
+static inline void node_buffer_print(node_buffer *nb)
+{
+	for (int i = 1; i <= nb->m_size; i++)
+		printf("%d ", nb->m_queue[nb->m_front+1]);
 }
 
 int main(void)
@@ -123,26 +104,29 @@ int main(void)
 		int 		 node_num, maxsize, reti, temp;
 		bool		 retb;
 		node_buffer *nb = NULL;
-		int 	 	 
 
-		scanf("%d", &node_num);
 		scanf("%d", &maxsize);
 		nb = node_buffer_create(maxsize);
-		if (nb == -1)
-			return -1;
 
-		for (int i_node = 0; i_node < node_num-1; i_node++) {
+		scanf("%d", &node_num);
+		for (int i_node = 0; i_node < node_num; i_node++) {
 			scanf("%[^ ]d", &temp);
-			retb = push_back(nb, temp);
+			retb = nb->push_back(nb, temp);
+			if (retb == false)
+				break;
 			nb->m_max_size++;
 		}
+		
 		int pop_num;
 		scanf("%d", &pop_num);
 
-		for (int i_pop = 0; i_pop < pop_num; i_pop++)
-			retb = pop_front(nb);
-
+		for (int i_pop = 0; i_pop < pop_num; i_pop++) {
+			retb = nb->pop_front(nb);
+			if (retb == false)
+				break;
+		}
 		node_buffer_print(nb);
+		node_buffer_free(nb);
 	}
 	return 0;
 }

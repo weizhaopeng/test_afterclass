@@ -103,7 +103,6 @@ static inline void node_exchange(data_store_list_node *node1, data_store_list_no
 	count_temp 		  = node1->obj->count;
 	node1->obj->count = node2->obj->count;
 	node2->obj->count = count_temp;
-
 }
 
 /*TODO:内存泄漏*/
