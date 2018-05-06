@@ -5,42 +5,82 @@
  *城市商品售价为[9,8,3,2,1]，最大财富为0，因为你买啥都无法赚钱。
  */
 #include <stdio.h>
+#include <stdlib.h>
 
-typedef struct node {
-	int money;
-	struct node *buy;
-	struct node *wait;
-	struct node *sall;
-} node;
+enum state {
+	buy = 0x00,	//可买
+	sall		//可卖
+};
 
-typedef node *ttree;
+typedef enum state state;
 
-static inline node *ttree_make(const int *price, const int N) {
-	node *root = malloc(sizeof(node));
-	root->money = 0;
-	
-	node *node_temp = root;
-	for (int i = 0; i < N; i++) {
-		node_new = malloc(sizeof(node));
-		if (node_temp->money = 0) {
-			node_temp->sall = NULL;
-			node_temp->wait 
-		
+typedef struct stack {
+	int   money;
+	state sta;
+} stack;
+
+
+static inline int find_max_price(stack *st, const int *price, const int N) {
+	if (N == 1) {
+		if (st->sta == buy)
+			return st->money;
+		if (st->sta == sall) {
+			st->sta = buy;
+			return st->money+price[0];
+		}
+	}
+	else {
+		int max, sum1, sum2, sum3, sum4;
+		if (st->sta == buy) {
+			st->sta = sall;
+			sum1 = st->money-price[0]+find_max_price(st, price+1, N-1);
+			st->sta = buy;
+			sum2 = st->money+find_max_price(st, price+1, N-1);
+			return sum1 > sum2 ? sum1 : sum2;
+		}
+		if (st->sta == sall) {
+			st->sta = buy;
+			sum3 = st->money+price[0]+find_max_price(st, price+1, N-1);
+			st->sta = sall;
+			sum4 = st->money+find_max_price(st, price+1, N-1);
+			return sum3 > sum4 ? sum3 : sum4;
+		}
+	}
+}
+
 int main(int argc, char **argv) {
 	//执行次数
-	int test_num, city_num;
+	int test_num;
 	scanf("%d", &test_num);
-	scanf("%d", &city_num);
 
-	int price[city_num];
-	for (int i = 0; i < test_num; i++)
+	int maxacq[test_num];
+	stack *st = malloc(sizeof(stack));
+	for (int i = 0; i < test_num; i++) {
+		int city_num;
+		scanf("%d", &city_num);
+
+		int price[city_num];
 		for (int j = 0; j < city_num; j++) {
 			fflush(stdin);
 			scanf("%d", price+j);
 		}
+		
+		st->money = 0;
+		st->sta	  = buy;
 
-		ttree tt = NULL;
-		tt = ttree_make(price, city_num);
+		maxacq[i] = find_max_price(st, price, city_num);
+		if (maxacq[i] < 0)
+			maxacq[i] = 0;
+	}
+
+	for (int j = 0; j < test_num; j++)
+		printf("%d\n", maxacq[j]);
+	if (st) {
+		free(st);
+		st = NULL;
+	}
+	return 0;
+}
 
 		
 
