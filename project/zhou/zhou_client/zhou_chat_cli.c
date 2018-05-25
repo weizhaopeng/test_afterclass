@@ -35,8 +35,8 @@ static inline int zhou_get_status(const int connfd,
 				const char *myname, const char *desthost) {
 	struct pollfd fds[2];
 	int    fdnum = 2, timeout = 30, len_l, len_d;
-	char   buf[100];
-	int    sign
+	char   buf[100], label;
+	int    signsend, signrev;
 
 	fds[0].fd 	   = connfd;
 	fds[1].fd 	   = connfd;
@@ -45,25 +45,35 @@ static inline int zhou_get_status(const int connfd,
 	fds[0].revents = 0;
 	fds[1].revents = 0;
 
-	ret = poll(fds, fdnum, timeout);
-	if (ret == -1) {
-		perror("poll");
-		return -1;
-	}
+	memset(buf, 0, 100);
+	len_l = strlen(myname);
+	len_d = strlen(desthost);
+	memcpy(buf, myname, len_l);
+	memcpy(buf+len_l+1, desthost, len_d);
+	buf[len_l] = '#';
 
-	if (fds[1].revents) {
-		memset(buf, 0, 100);
-		len_l = strlen(myname);
-		len_d = strlen(desthost);
-		memcpy(buf, myname, len_l);
-		buf[len_l] = '\0';
-		memcpy(buf+len_l+1, desthost, len_d);
-		
-		write(connfd, buf, 100);
+	while (signrev <= 0) {
+		ret = poll(fds, fdnum, timeout);
+		if (ret == -1) {
+			perror("poll");
+			return -1;
+		}
+	
+		if (fds[1].revents == POLLOUT)
+			signsend = write(connfd, buf, 100);
+	
+		if (signsend > 0 || fds[0].revents == POLLIN) {
+			signrev = read(connfd, label, 1);
+			if (signrev > 0) break;
 	}
+	return signrec;
+}
+
+static inline int zhou_online(const int connfd) {
+
 
 	
-	/*while(1) {
+	while(1) {
 		ret = poll(fds, fdnum, timeout);
 		if (ret == -1) {
 			perror("poll");
@@ -96,6 +106,8 @@ static inline int zhou_get_status(const int connfd,
 	}
 }
 
+static inline zhou_online(const int connfd) {
+	
 //界面信息消息显示
 //连接后接受到服务器发送的字段，第一个字节用于告知要连接的主机的状态
 static inline int zhou_interface(const char sign, 

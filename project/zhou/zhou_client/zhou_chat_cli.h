@@ -13,6 +13,5 @@
 #define ENOCONNECT	 2
 #define ENOONLINE 	 4
 
-static inline int zhou_chat(const int connfd);
 
 #endif 

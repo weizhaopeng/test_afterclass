@@ -7,8 +7,8 @@ int zhou_connect(const uint32_t localaddr,
 	struct sockaddr_in cliaddr, seraddr;
 	socklen_t 		   clilen = sizeof(cliaddr);
 	cliaddr.sin_family 		  = AF_INET;
-	cliaddr,sin_addr.s_addr   = localaddr;
-	cliaddr.sin_port 	   	  = ZHOU_PORT;
+	cliaddr,sin_addr.s_addr   = htonl(localaddr);
+	cliaddr.sin_port 	   	  = htons(ZHOU_PORT);
 
 	connfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (connnfd == -1) {
