@@ -6,7 +6,12 @@
 #include <string.h>
 #include <errno.h>
 
-#define BUF_SIZE
+#define BUF_SEND_CAP 100
+#define BUF_RECV_CAP 100
+
+#define ENOHOST		 1
+#define ENOCONNECT	 2
+#define ENOONLINE 	 4
 
 static inline int zhou_chat(const int connfd);
 
