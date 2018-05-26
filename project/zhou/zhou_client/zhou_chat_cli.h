@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <poll.h>
+#include <strings.h>
 
 #define BUF_SEND_CAP 100
 #define BUF_RECV_CAP 100

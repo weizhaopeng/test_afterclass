@@ -3,7 +3,7 @@
 static inline int zhou_get_status(const int connfd);
 static inline int zhou_nonline	 (const int connfd);
 static inline int zhou_online	 (const int connfd);
-static inline void zhou_interface(void);
+static inline void zhou_interface(const int messtype, char *mess, int messlen);
 
 //给定接口进行聊天
 int zhou_chat(const int connfd) {
@@ -70,8 +70,16 @@ static inline int zhou_get_status(const int connfd,
 }
 
 static inline int zhou_online(const int connfd) {
+	struct pollfd fds[3];
+	int fdnum = 3, timeout = 20, ret;
+	char buf_send[BUF_SEND_CAP], buf_recv[BUF_RECV_CAP];
 
-
+	fds[0].fd 	  = connfd;
+	fds[1].fd 	  = connfd;
+	fds[0].events = POLLIN;
+	fds[1].events = POLLOUT;
+	fds[2].fd	  = STDIN_FILENO;
+	fds[2].events = POLLIN;
 	
 	while(1) {
 		ret = poll(fds, fdnum, timeout);
@@ -79,11 +87,11 @@ static inline int zhou_online(const int connfd) {
 			perror("poll");
 			return -1;
 		}
-		if (fds[0].revents) {
-			ret = read(STDIN_FILENO, buf_send,BUF_SEND_CAP);
+		if (fds[2].revents == POLLIN && fds[1].revents == POLLOUT) {
+			ret = read(STDIN_FILENO, buf_send, BUF_SEND_CAP);
 			switch (ret) {
 				case 0:
-					shutdown(connfd, SHUT_WR);
+					return 0;
 					break;
 				case -1:
 					perror("read messege");
@@ -93,20 +101,25 @@ static inline int zhou_online(const int connfd) {
 					write(connfd, buf_send, ret);
 					break;
 			}
-		}*/
+		}
 	//被动接受信息
-		if (fds[1].revents) {
+		if (fds[0].revents == POLLIN) {
 			ret = read(connfd, buf_recv, BUF_RECV_CAP);
 			if (ret == -1)
 				return -1;
-			ret = zhou_interface(buf_recv[0], buf_recv+1, ret-1);
+			else if (ret == 0) break;
+			ret = zhou_interface(1, buf_recv, BUF_RECV_CAP);
 			if (ret == -1)
 				return -1;
+			bzero(buf_recv, BUF_RECV_CAP);
 		}
 	}
+	return 0;
 }
 
-static inline zhou_online(const int connfd) {
+static inline zhou_nonline(const int connfd) {
+	//实际上和在线通话的形式类似
+	int fds[3]
 	
 //界面信息消息显示
 //连接后接受到服务器发送的字段，第一个字节用于告知要连接的主机的状态
