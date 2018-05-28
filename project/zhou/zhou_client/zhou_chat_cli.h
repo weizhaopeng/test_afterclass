@@ -1,6 +1,10 @@
 #ifndef _ZHOU_CHAT_H_
 #define _ZHOU_CHAT_H_
 
+typedef enum obj {
+	int me 	  = 0x00,
+	int other,
+}obj;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

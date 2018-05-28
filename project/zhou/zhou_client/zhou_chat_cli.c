@@ -13,19 +13,15 @@ int zhou_chat(const int connfd) {
 	switch(ret) {
 		case -1: return -1;
 
-		case 1://返回值是-1出错，为0正常断开， 为1对方掉线
+		case 1:
 			ret = zhou_online(connfd);
-			if (ret == -1) 
-				return -1;
-			else 
-				if (ret == 0)
+			if (ret == -1) return -1;
+			else if (ret == 0)
 					break;
-
 		case 0:
 			ret = zhou_nonline(connfd);
 			if (ret == -1) return -1;
 			break;
-			
 		default:
 	}
 	return 0;
@@ -69,6 +65,7 @@ static inline int zhou_get_status(const int connfd,
 	return signrec;
 }
 
+//输入：连接端口	输出：根据端口进行聊天
 static inline int zhou_online(const int connfd) {
 	struct pollfd fds[3];
 	int fdnum = 3, timeout = 20, ret;
@@ -117,30 +114,77 @@ static inline int zhou_online(const int connfd) {
 	return 0;
 }
 
-static inline zhou_nonline(const int connfd) {
-	//实际上和在线通话的形式类似
-	int fds[3]
+//输入：端口fd	输出：聊天
+static inline int zhou_nonline(const int connfd) {
+	//实际上和在线聊天的形式类似
+	char feedback[] = "对方不在线，可对其留言";
+	int  ret, feedlen = strlen(feedback);;
+
+	ret = zhou_interface(0, feedback, feedlen);
+	if (ret == -1) return -1;
+	
+	ret = zhou_online(connfd);
+	if (ret == -1) return -1;
+	return 0;
+}
 	
 //界面信息消息显示
-//连接后接受到服务器发送的字段，第一个字节用于告知要连接的主机的状态
-static inline int zhou_interface(const char sign, 
-				char *mess, const int mess_len) {
-	zhou_backgrand();
-	switch (sign) {
-		case 0x00:
-			printf("%40s\n", mess);
+static inline void zhou_interface(const int messtype, 
+			char *mess, int messlen) {
+	switch (messtype) {
+		case 2:
+			zhou_baseface();
 			break;
-		case 0x01:
-			printf("%40s\n", "好友不在线，可以离线留言");
+		case 1:
+			zhou_message_print(me, mess, messlen);
 			break;
-		case 0x02:
-			printf("%40s\n", "找不到好友");
+		case 0:
+			zhou_message_print(other mess, messlen);
 			break;
 		default:
 	}
 }
+//TODO 编写基础界面
+void zhou_baseface(const int posi) {
+	switch (posi) {
+		case 0:
+		case 1:
+			system("clear");
+ 			for (int i = 0; i < 30; i++) {
+				for (int j = 0; j < 150; j++) {
+					if ( i == 0 || i == 29)
+						printf("*");
+					else {
+						if (j == 0 || j == 149) {
+							printf("*");
+						}
+						else {
+							if (i == 25 && j > 0 && j < 149)
+								printf("-");
+							else printf("\033[1C");
+						}
+					}
+				}
+				printf("\n");
+			}
+			printf("\033[149A\033[1C");
+			break;
+		//TODO 
+		case 2:
 
-//确认目标状态
-static inline int zhou_get_status(const int connfd) {
+		case -1:
+
+		
+
+}
 	
+}
+//TODO 编写聊天界面
+static inline void zhou_message_print(const int messfrom,
+			const char *message, const int messlen) {
+	
+	
+}
+
+
 
