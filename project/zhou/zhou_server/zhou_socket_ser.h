@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include "zhou_datebase.h"
 
+#define SOCK_PORT
+#define TCP_MAXCONN 20
 
 int zhou_socket_ser(struct sockaddr_in *cliaddr, socklen_t *len);
 #endif
