@@ -13,5 +13,7 @@
 #define SOCK_PORT
 #define TCP_MAXCONN 20
 
-int zhou_socket_ser(struct sockaddr_in *cliaddr, socklen_t *len);
+//形参：客户端地址结构，地址长度，聊天描述符对缓冲区
+int zhou_socket_ser(struct sockaddr_in *cliaddr,
+		socklen_t *len, int *chat_pair);
 #endif

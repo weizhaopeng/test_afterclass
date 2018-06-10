@@ -1,5 +1,55 @@
-#include "zhou_chat.h"
+#include "zhou_chat_cli.h"
 
+int zhou_chat(int connfd) {
+	int  		  fdsnum = 3, timeout = 20, ret, sign_stop = 0;
+	char		  buf_send[BUF_SEND_CAP], buf_recv[BUF_RECV_CAP];
+	struct pollfd fd[3];
+	
+	fd[0].fd 	 = connfd;
+	fd[0].events = POLLIN;
+	fd[1].fd 	 = connfd;
+	fd[1].events = POLLOUT;
+	fd[2].fd	 = STDIN_FILENO;
+	fd[2].events = POLLIN;
+
+	while (!sign_stop) {
+		ret = poll(fd, fdsnum, timeout);
+		if (ret == -1) {
+			perror("poll");
+			return -1;
+		}
+		//如果键盘有输入信息
+		if (fd[1].revents == POLLIN) {
+			if (fd[1].revents == POLLOUT) {
+				ret = read(STDIN_FILENO, buf_send, BUF_SEND_CAP);
+				if (ret == 0) {
+					shutdown(connfd, SHUT_WR);
+					sign_stop = 1;
+				}
+				write(connfd, buf_send, BUF_SEND_CAP);
+
+				bzero(buf_send, BUF_SEND_CAP);
+				fflush(stdin);
+			}
+		}
+		//如果从网口有数据发送回来
+		if (fd[0].revents == POLLIN) {
+			ret = read(connfd, buf_recv, BUF_RECV_CAP);
+			if (ret == 0) {
+				close(connfd);
+				sign_stop = 1;
+			}
+			write(STDOUT_FILENO, buf_recv, BUF_RECV_CAP);
+		}
+	}
+}
+
+
+			
+
+
+
+/*
 static inline int zhou_get_status(const int connfd);
 static inline int zhou_nonline	 (const int connfd);
 static inline int zhou_online	 (const int connfd);
@@ -185,6 +235,6 @@ static inline void zhou_message_print(const int messfrom,
 	
 	
 }
-
+*/
 
 

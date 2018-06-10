@@ -6,14 +6,15 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define serverip 
+#include <wait.h>
 #define NAME_LEN  100
 #define ZHOU_PORT 5050
 
-int zhou_connect(const uint32_t serveraddr, 
-		const char *localname, const char *destname);
+int zhou_connect(char *serv_ip);
 int zhou_disconnect(int connfd);
+
 
 #endif
