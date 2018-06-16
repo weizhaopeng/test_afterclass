@@ -42,6 +42,7 @@ int zhou_chat(int connfd) {
 			write(STDOUT_FILENO, buf_recv, BUF_RECV_CAP);
 		}
 	}
+	return 0;
 }
 
 

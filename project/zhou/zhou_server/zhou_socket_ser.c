@@ -1,8 +1,11 @@
 #include "zhou_socket_ser.h"
 
+static inline int listen_accept_fd_pair
+			(const int listenfd, int *fd_pair);
+
 int zhou_socket_ser(struct sockaddr_in *cliaddr,
 		socklen_t *len, int *chat_pair) {
-	int    			   listenfd, connfd, connnum, ret;
+	int    			   listenfd, ret;
 	socklen_t 		   seraddr_len = sizeof(struct sockaddr_in);
 	struct sockaddr_in seraddr;
 
@@ -18,17 +21,29 @@ int zhou_socket_ser(struct sockaddr_in *cliaddr,
 					seraddr_len);
 	if (ret == -1) 
 		return -1;
-	
-	listenfd = listen(listenfd, TCP_MAXCONN);
-	if (listenfd == -1)
+	//TODO:listen the fd_pair is wrong
+	ret = listen_accept_fd_pair(listenfd, chat_pair);
+	if (ret == -1) 
 		return -1;
 
-	while (connnum != 2) {
-		connfd = accept(listenfd, (struct sockaddr*)cliaddr, len);
-		if (connfd == -1)
+	return 0;
+}
+
+//接受fd_pair返回值结果参数
+static inline int listen_accept_fd_pair
+			(const int listenfd, int *fd_pair) {
+	int ret, connfd, sign_connect = 0;
+
+	while (sign_connect != 2) {	
+		ret = listen(listenfd, TCP_MAXCONN);
+		if (ret == -1)
 			return -1;
-		else
-			chat_pair[++connnum] = connfd;
+
+		connfd = accept(listenfd, NULL, NULL);
+			if (connfd == -1)
+				return -1;
+		fd_pair[sign_connect++] = connfd;
+		close(listenfd);
 	}
 	return 0;
 }

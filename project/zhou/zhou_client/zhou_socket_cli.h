@@ -8,13 +8,14 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-
 #include <wait.h>
+
 #define NAME_LEN  100
 #define ZHOU_PORT 5050
+#define ZHOU_FAMILY AF_INET
 
-int zhou_connect(char *serv_ip);
-int zhou_disconnect(int connfd);
+int  zhou_connect(char *serv_ip);
+void zhou_disconnect(int connfd);
 
 
 #endif

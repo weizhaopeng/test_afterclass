@@ -3,10 +3,10 @@
 
 int main(int argc, char *argv[]) {
 	int   connfd, ret, status;
-	char *serverip = "120.79.130.38";
+	char  *server_ip = argv[1];
 	pid_t chat_pid;
 
-	connfd = zhou_connect(serverip);
+	connfd = zhou_connect(server_ip);
 	if (connfd == -1) {
 		perror("connect");
 		return -1;

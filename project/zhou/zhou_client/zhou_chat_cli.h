@@ -13,11 +13,7 @@
 
 #define BUF_SEND_CAP 100
 #define BUF_RECV_CAP 100
-
-#define ENOHOST		 1
-#define ENOCONNECT	 2
-#define ENOONLINE 	 4
-
+#define POLL_WAIT_TIME 20 /*UNIT:S*/
 int zhou_chat(int connfd);
 
 #endif 
