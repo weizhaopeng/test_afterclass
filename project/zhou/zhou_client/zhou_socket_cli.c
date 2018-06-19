@@ -20,12 +20,10 @@ int zhou_connect(char *serv_ip) {
 
 	ret = connect(connfd, (struct sockaddr*)(&seraddr), seraddr_len);
 	if (ret == -1) {
-		perror("connect");
 		return -1;
 	}
 	else {
 		system("clear");
-		puts("连接成功\n");
 		return connfd;
 	}
 }

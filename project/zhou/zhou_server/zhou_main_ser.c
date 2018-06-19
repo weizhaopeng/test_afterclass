@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 	//进行tcp连接
 	ret = zhou_socket_ser(&cliaddr, &cliaddr_len, fd_pair);
 	if (ret == -1) {
-		perror("connect:");
+		perror("connect");
 		return -1;
 	}
 	//进行聊天
