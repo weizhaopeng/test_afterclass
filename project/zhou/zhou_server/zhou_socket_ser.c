@@ -10,7 +10,7 @@ int zhou_socket_ser(struct sockaddr_in *cliaddr,
 	struct sockaddr_in seraddr;
 
 	seraddr.sin_family 		= AF_INET;
-	seraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	inet_pton(AF_INET, SERVER_IP, &seraddr.sin_addr.s_addr);
 	seraddr.sin_port		= htons(SOCK_PORT);
 
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
