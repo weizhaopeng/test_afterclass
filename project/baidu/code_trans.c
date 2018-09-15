@@ -3,7 +3,6 @@
 #include <string.h>
 
 static inline void distinguish(char *string);
-static inline long int pow_int(const int x, const int y);
 static inline void convert_print(long row, long col, char mode);
 
 int main(void) {
@@ -31,26 +30,21 @@ int main(void) {
 }
 
 static inline void distinguish(char *string) {
-	int mode = 0;
-	if (string[0] == 'R') {
-		if (string[1] >= '0' && string[1] <= '9')
-			mode = 1;
-		else
-			mode = 0;
-	}
-	else
-		mode = 0;
+	long row  = 0, col = 0;
+	int  mode = 0;
+	char buf[32] = {0};
 
-	long row = 0, col = 0;
-	char buf[16] = {0};
-
-	if (mode == 1)
-		sscanf(string, "R%ldC%ld", &row, &col);
-	else {
+	if (sscanf(string, "R%ldC%ld", &row, &col) == 2)
+		mode = 1;
+	
+	if (mode == 0) {
+		long pow = 1;
 		sscanf(string, "%[^0-9]%ld", buf, &row);
 		//将WW转化成十进制
-		for (int i = 0; i < strlen(buf); i++) {
-			col += (buf[i]-'A'+1)*pow_int(26, strlen(buf)-i-1);
+		for (int i = strlen(buf)-1; i >= 0; i--, pow *= 26) {
+			if (buf[i] == '@')
+				col += 0;
+			col += (buf[i]-'A'+1)*pow;
 		}
 	}
 
@@ -61,39 +55,25 @@ static inline void convert_print(long row, long col, char mode) {
 	if (mode == 0)
 		printf("R%ldC%ld\n", row, col);
 	else {
-		char buf[16] = {0};
-		long de = col, last = 0, length = 0;
+		int  i = 0, k = 0, int_buf[16] = {0};
+		char char_buf[16] = {'\0'};
+		long de = col;
+		//辗转相除法找到26进制的表示
+		while (de >= 26) {
+			int_buf[i++] = de%26;
+			de = de/26;
+		}
+		int_buf[i] = de;
 
-		sprintf(buf, "%ld", de/26);
-		last   = de%26;
-		length = strlen(buf);
-
-		for (int i = 0; i <= length; i++) {
-			if (buf[i] == '0') {
-				if (length > 1) {
-					buf[i] = 'Z';
-					continue;
-				}
-				else {
-					i--;
-					continue;
-				}
+		for (int j = i; j >= 0; j--, k++) {
+			if (int_buf[j] == 0) {
+				char_buf[k-1]--;
+				char_buf[k] = 'Z';
 			}
-			else {
-				if (i  == length)
-					buf[i] = last+'A'-1;
-				else
-					buf[i] = buf[i]-'0'+'A'-1;
-			}
-		}	
-		printf("%s%ld\n", buf, row);
+			else
+				char_buf[k] = 'A'+int_buf[j]-1;
+		}
+		printf("%s%ld\n", char_buf, row);
 	}
 }
 		
-static inline long int pow_int(const int x, const int y) {
-	long return_value = 1;
-
-	for (int i = 0; i < y; i++)
-		return_value *= x;
-	return return_value;
-}
