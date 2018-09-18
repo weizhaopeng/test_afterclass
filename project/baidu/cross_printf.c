@@ -28,7 +28,7 @@ int main(void) {
 		int y = x, edge = (int)powf(3, case_t[i]-1);
 		fill_in_buf(x, y, case_t[i]);
 
-		printf("Case #%d:\n", case_t[i]);
+		printf("Case #%d:\n", i+1);
 		for (int j = 0; j < edge; j++) {
 			for (int k = 0; k < edge; k++)
 				printf("%c", array[j][k]);
