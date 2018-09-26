@@ -29,7 +29,7 @@ static inline hashtable *hash_create(const int capacity);
 int main(void) {
 	//读入敏感词个数
 	int  word_num = 0;
-	char word_temp[50] = {0}, buf[50] = {0};
+	char word_temp[50] = {0}, buf[50] = {0}, ch = 0;
 	
 	scanf("%d", &word_num);
 	//创建哈希表结构并且将敏感词存储进hash表
@@ -46,13 +46,14 @@ int main(void) {
 
 	for (int j = 0, k = 0; j < 2000; j++) {
 		buf[k] = getchar();
-
+		
 		if ((buf[k] >= 'a' && buf[k] <= 'z') || (buf[k] >= 'A' && buf[k] <= 'Z'))
 			k++;
-		else {
-			char ch = buf[k];
 
+		else if (k > 0) {
+			ch 	   = buf[k];
 			buf[k] = '\0';
+
 			if (hashmap(ht, buf) == 1) {
 				for (int i = 0; i < strlen(buf); i++)
 					printf("*");
@@ -60,10 +61,15 @@ int main(void) {
 			} else {
 				printf("%s", buf);
 				printf("%c", ch);
-			}
-			k = 0;
+			} 
 
+			k = 0;
 			if (ch == '\n')
+				break;
+		}
+		else {
+			printf("%c", buf[k]);
+			if (buf[k] == '\n')
 				break;
 		}
 	}
