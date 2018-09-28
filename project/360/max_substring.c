@@ -5,8 +5,12 @@
 #include <stdlib.h>
 
 int main(void) {
-	int N = 0, M = 0, begin = 0, end = -1, 
-	   *array_n = NULL, *array_m = NULL;
+	int N 		= 0, 
+		M 		= 0, 
+		end 	= -1, 
+		begin   = 0, 
+	   *array_n = NULL, 
+	   *array_m = NULL;
 
 	//读入需要的数据
 	setbuf(stdin, NULL);
