@@ -1,11 +1,12 @@
 /*算法：
+ *https://www.nowcoder.com/practice/661c49118ca241909add3a11c96408c8?tpId=85&tqId=29830&tPage=1&rp=1&ru=/ta/2017test&qru=/ta/2017test/question-ranking
  *1.根据贪心法，我们将最大值集中在最大的数据上
  *2.然后将从最大的数据进行分层的寻找最大正数和最小负数
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+//用来保存当前所在的层级和当前的最大的整数和最小的负数
 typedef struct unit {
 	long max;
 	long min;
@@ -23,6 +24,7 @@ int main(void) {
 
 	setbuf(stdin, NULL);
 	scanf("%d", &num_stu);
+
 	set_ability = calloc(1, sizeof(int)*num_stu);
 	for (int i = 0; i < num_stu; i++)
 		scanf("%d", set_ability+i);
@@ -39,10 +41,11 @@ int main(void) {
 			min_no = j;
 		}
 	}
+	//寻找最大正数和最小负数周围的最大值
 	max1 = find_mm(num_select, max_no, interval, num_stu);
 	max2 = find_mm(num_select, min_no, interval, num_stu);
 	printf("%d\n", max1 > max2 ? max1 : max2);
-
+	//释放内存
 	free(set_ability); free(set);
 	set_ability = set = NULL;
 	return 0;
@@ -50,7 +53,7 @@ int main(void) {
 //寻找一个当前位置的前后的乘积的最大最小值
 static inline int find_mm(int layer_left, int index, int *set, const int interval, const int set_len) {
 	static unit u = {0, 0, leyer_left};
-	long   max1 = max2 = 0;
+	long   max1   = 0, max2 = 0;
 
 	if (layer_left == 1) {
 		for (int i = index-interval
@@ -60,6 +63,7 @@ static inline int find_mm(int layer_left, int index, int *set, const int interva
 			u.max = (set[i]*u.min > u.max ? set[i]*u.min : u.max);
 		}
 	}
+	//TODO:理解这个算法
 	else {
 		for (int i = index-interval
 			; i >= 0 && i <= num_stu && i <= index+interval
@@ -74,13 +78,13 @@ static inline int find_mm(int layer_left, int index, int *set, const int interva
 				find_mm(layer_left-1, index, setcopy, interval, set_len);
 			}
 			
-			if (int new_min = set[i]*u.min < u.min) {
+			if (new_min = set[i]*u.min < u.min) {
 				int setcopy[set_len] = {0};
 
 				memcpy(setcopy, set, sizeof(int)*set_len);
-				u.min = new_min;
+				u.min 	   = new_min;
 				setcopy[i] = 1;
-				index = i;
+				index 	   = i;
 				find_mm(layer_left-1, index, setcopy, interval, set_len);
 			}
 		}

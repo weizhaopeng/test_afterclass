@@ -5,7 +5,7 @@ static inline int listen_accept_fd_pair
 
 int zhou_socket_ser(struct sockaddr_in *cliaddr,
 		socklen_t *len, int *chat_pair) {
-	int    			   listenfd, ret;
+	int    			   listenfd = 0, ret = 0;
 	socklen_t 		   seraddr_len = sizeof(struct sockaddr_in);
 	struct sockaddr_in seraddr;
 
@@ -14,17 +14,23 @@ int zhou_socket_ser(struct sockaddr_in *cliaddr,
 	seraddr.sin_port		= htons(SOCK_PORT);
 
 	listenfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (listenfd == -1)
+	if (listenfd == -1) {
+		perror("create server socket error");
 		return -1;
+	}
 	
-	ret = bind(listenfd, (struct sockaddr *)&seraddr,
-					seraddr_len);
-	if (ret == -1) 
+	ret = bind(listenfd, (struct sockaddr *)&seraddr, 
+		seraddr_len);
+	if (ret == -1) {
+		perror("bind socket error");
 		return -1;
-	//TODO:listen the fd_pair is wrong
+	}
+
 	ret = listen_accept_fd_pair(listenfd, chat_pair);
-	if (ret == -1) 
+	if (ret == -1) {
+		perror("accept connect error");
 		return -1;
+	}
 
 	return 0;
 }

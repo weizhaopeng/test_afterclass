@@ -13,6 +13,7 @@
 #define TCP_MAXCONN 20
 #define SOCK_IP_SERVER "120.79.130.38"
 
+
 //形参：客户端地址结构，地址长度，聊天描述符对
 int zhou_socket_ser(struct sockaddr_in *cliaddr,
 		socklen_t *len, int *chat_pair);
