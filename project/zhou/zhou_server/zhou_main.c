@@ -4,14 +4,12 @@
 int main(int argc, char *argv[]) {
 	//初始化变量
 	int 			   fd_pair[2] = {0}, ret = 0;
-	socklen_t 		   cliaddr_len = 0;
-	struct sockaddr_in cliaddr;
 	puts("初始化变量");
 
 	//进行tcp连接
-	ret = zhou_socket_ser(&cliaddr, &cliaddr_len, fd_pair);
+	ret = zhou_socket_ser(fd_pair);
 	if (ret == -1) {
-		perror("客户端服务器连接失败:");
+		perror("客户端服务器连接失败");
 		return -1;
 	}
 	else
