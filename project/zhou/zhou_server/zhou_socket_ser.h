@@ -11,9 +11,11 @@
 
 #define SOCK_PORT   5050
 #define TCP_MAXCONN 20
-#define SOCK_IP_SERVER "127.0.0.0"
+#define SOCK_IP_SERVER "172.16.252.209"
 
 
+nihao
+wozhenshid  jk
 //形参：客户端地址结构，地址长度，聊天描述符对
 int
 zhou_socket_ser(int *chat_pair);
