@@ -1,10 +1,9 @@
 #include "zhou_socket_ser.h"
 
-static inline int accept_pair(int listenfd, int *fd_pair);
-
 int zhou_socket_ser(int *chat_pair) {
-	int    			   listenfd = 0, ret = 0, addr_h = 0;
-	socklen_t 		   seraddr_len = sizeof(struct sockaddr);
+	int 	  listenfd = 0, ret = 0, addr_h = 0, connfd[2] = {0};
+	//pid_t	  child_pid[2] = {0};
+	socklen_t seraddr_len = sizeof(struct sockaddr);
 	struct sockaddr_in seraddr;
 
 	ret = inet_pton(AF_INET, SOCK_IP_SERVER, &addr_h);
@@ -29,35 +28,21 @@ int zhou_socket_ser(int *chat_pair) {
 	}
 
 	for (int i = 0; i < 2; i++) {
-		ret = accept_pair(listenfd, chat_pair+i);
+		ret = listen(listenfd, TCP_MAXCONN);
 		if (ret == -1) {
-			perror("accept connect error");
+			perror("listen connection error");
 			return -1;
+		}
+		else {
+			connfd[i] = accept(listenfd, NULL, NULL);
+			if (connfd[i] == -1) {
+				perror("accept connection error");
+				return -1;
+			}
 		}
 	}
 
 	puts("the fd pair has connected");
-	return 0;
-}
-
-//接受fd_pair返回值结果参数
-static inline int accept_pair(int listenfd, int *fd_pair) {
-	int ret = 0, connfd = 0;
-
-	ret = listen(listenfd, TCP_MAXCONN);
-	if (ret == -1) {
-		perror("listen connection error");
-		return -1;
-	}
-	else {
-		connfd = accept(listenfd, NULL, NULL);
-		if (connfd == -1) {
-			perror("accept connection error");
-			return -1;
-		}
-		*fd_pair = connfd;
-		close(listenfd);
-	}
 	return 0;
 }
 
