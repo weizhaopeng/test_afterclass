@@ -1,7 +1,7 @@
 #include "zhou_socket_ser.h"
 
 int zhou_socket_ser(int *chat_pair) {
-	int 	  listenfd = 0, ret = 0, addr_h = 0, connfd[2] = {0};
+	int 	  listenfd = 0, ret = 0, addr_h = 0;
 	//pid_t	  child_pid[2] = {0};
 	socklen_t seraddr_len = sizeof(struct sockaddr);
 	struct sockaddr_in seraddr;
@@ -29,18 +29,14 @@ int zhou_socket_ser(int *chat_pair) {
 
 	for (int i = 0; i < 2; i++) {
 		ret = listen(listenfd, TCP_MAXCONN);
-		if (ret == -1) {
-			perror("listen connection error");
-			return -1;
-		}
-		else {
-			connfd[i] = accept(listenfd, NULL, NULL);
-			if (connfd[i] == -1) {
-				perror("accept connection error");
-				return -1;
-			}
-		}
-	}
+		if (ret == 0) {
+			child[i] = fork() {
+				if (child[i] == 0) {
+					connfd = accept(listenfd, NULL, NULL);
+					if (connfd == -1) {
+						perror("require accept failed");
+						return -1;
+					}
 
 	puts("the fd pair has connected");
 	return 0;
