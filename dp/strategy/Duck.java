@@ -5,6 +5,13 @@ public class Duck {
 	QuackInter quack;
 	boolean  isAlive;
 
+	void flyPerformance() {
+		fly.fly();
+	}
+	void quackPerformance() {
+		quack.quack();
+	}
+
 	void setFlyBehavior(FlyInter f) {
 		fly = f;
 	}

@@ -5,19 +5,19 @@ public class Demo {
 		YanShuiDuck ysd1 = new YanShuiDuck(new CannotFly(), new CannotQuack(), false);
 		YellowDuck yd = new YellowDuck();
 
-		ysd.fly();
-		ysd1.fly();
-		yd.fly();
+		ysd.flyPerformance();
+		ysd1.flyPerformance();
+		yd.flyPerformance();
 
-		ysd.quack();
-		ysd1.quack();
-		yd.quack();
+		ysd.quackPerformance();
+		ysd1.quackPerformance();
+		yd.quackPerformance();
 
 		yd.setFlyBehavior(new CannotFly());
 		yd.setQuackBehavior(new CannotQuack());
 
-		yd.fly();
-		yd.quack();
+		yd.flyPerformance();
+		yd.quackPerformance();
 	}
 }
 
