@@ -1,40 +1,40 @@
 package dp.decorate.capiaity;
-import dp.decorate.beverage;
+import dp.decorate.beverage.*;
 
 public abstract class Capiaity extends Beverage {
 	private Beverage beverage;
-	private int price = 1;
+	private float cupSize = 1;
 
 	Capiaity(Beverage b) {
 		this.beverage = b;
 	}
-	Capiaity(Beverage b, int priceIn) {
+	Capiaity(Beverage b, int cupSizeIn) {
 		this.beverage = b;
-		this.price	  = priceIn;
+		this.cupSize = cupSizeIn;
 	}
 
 	abstract String getDescription();
 
 	int cost() {
-		return(super.cost()*this.price);
+		return(beverage.cost()*this.cupSize);
 	}
 }
 
 class LittleCap extends Capiaity {
 	String getDescription() {
-		return(super.getDescription()+", little cap");
+		return(beverage.getDescription()+", little cap");
 	}
 }
 
 class MiddleCap extends Capiaity {
 	String getDescription() {
-		return(super.getDescription()+", middle cap");
+		return(beverage.getDescription()+", middle cap");
 	}
 }
 
 class BigCap extends Capiaity {
 	String getDescription() {
-		return(super.getDescription()+", big cap");
+		return(beverage.getDescription()+", big cap");
 	}
 }
 
