@@ -1,5 +1,5 @@
-package dp.decorate.capiaity;
-import dp.decorate.beverage.*;
+package decorate.capiaity;
+import  decorate.beverage.*;
 
 public abstract class Capiaity extends Beverage {
 	private Beverage beverage;

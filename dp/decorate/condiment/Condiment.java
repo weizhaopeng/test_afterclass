@@ -1,5 +1,5 @@
-package dp.decorate.decorate;
-import dp.decorate.beverage.*;
+package decorate.decorate;
+import  decorate.beverage.*;
 
 public abstract class Condiment extends Beverage {
 	private Beverage beverage;

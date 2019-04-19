@@ -1,3 +1,17 @@
+./strategy/QuackInter.java
+./strategy/CannotQuack.java
+./strategy/Duck.java
+./strategy/Demo.java
+./strategy/FlyWithWings.java
+./strategy/FlyInter.java
+./strategy/CannotFly.java
+./strategy/QuackGa.java
+./observer/User.java
+./observer/Observer.java
+./observer/Demo.java
+./observer/Data.java
+./observer/Subject.java
+./observer/Display.java
 ./decorate/condiment/Condiment.java
 ./decorate/Demo.java
 ./decorate/capiaity/Capiaity.java

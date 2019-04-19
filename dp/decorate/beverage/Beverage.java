@@ -1,4 +1,4 @@
-package dp.decorate.beverage;
+package decorate.beverage;
 
 public abstract class Beverage {
 	private String description = "beverage";

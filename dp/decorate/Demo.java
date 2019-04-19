@@ -1,5 +1,5 @@
-package dp.decorate;
-import dp.decorate.*;
+package decorate;
+import  decorate.*;
 
 public class Demo {
 	public static void main(String[] args) {
